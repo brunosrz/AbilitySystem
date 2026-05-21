@@ -117,4 +117,3 @@ CMakeUserPresets.json
 *.tmp
 /godot
 /.claude
-/demo
