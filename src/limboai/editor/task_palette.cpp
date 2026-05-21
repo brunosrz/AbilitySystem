@@ -172,7 +172,7 @@ void TaskPaletteSection::set_filter(const String &p_filter_text) {
 	} else {
 		for (int i = 0; i < tasks_container->get_child_count(); i++) {
 			Button *btn = Object::cast_to<Button>(tasks_container->get_child(i));
-			btn->set_visible(btn->get_text().findn(p_filter_text) != -1);
+			btn->set_visible(btn->get_text().find(p_filter_text) != -1);
 			num_hidden += !btn->is_visible();
 		}
 		set_visible(num_hidden < tasks_container->get_child_count());

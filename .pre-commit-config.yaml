@@ -95,6 +95,7 @@ repos:
     hooks:
       - id: mypy
         files: \.py$
+        exclude: (^src/|^doc/)
         types_or: [text]
 
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -108,7 +109,7 @@ repos:
     hooks:
       - id: codespell
         additional_dependencies: [tomli]
-        exclude: (?x)^(.*\.md*|tests/doctest\.h)$
+        exclude: (?x)^(.*\.md*|tests/doctest\.h|.*\.svg)$
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.34.1

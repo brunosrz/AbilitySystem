@@ -165,7 +165,7 @@ jobs:
 
       - name: Set up Swappy
         run: |
-          cd thirdparty/swappy-frame-pacing/
+          cd third-party/swappy-frame-pacing/
           url="https://github.com/godotengine/godot-swappy/releases/download/${SWAPPY_VERSION}/godot-swappy.7z"
           curl -L "${url}" -o godot-swappy.7z
           7z x -y godot-swappy.7z

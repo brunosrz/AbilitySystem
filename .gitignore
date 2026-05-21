@@ -117,3 +117,4 @@ CMakeUserPresets.json
 *.tmp
 /godot
 /.claude
+/.mypy_cache
