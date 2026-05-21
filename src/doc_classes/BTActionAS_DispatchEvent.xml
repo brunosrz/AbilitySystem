@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTActionAS_DispatchEvent" inherits="BTAction" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BTAction that dispatches an Ability System event.
+	</brief_description>
+	<description>
+		A Behavior Tree action that dispatches an ASEventTag via [method ASComponent.dispatch_event]. Uses the native AS Event system (Split Registry Pattern).
+		Returns [constant BT.SUCCESS] immediately after dispatch.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="asc_node_path" type="NodePath" setter="set_asc_node_path" getter="get_asc_node_path" default="NodePath(&quot;&quot;)">
+		</member>
+		<member name="custom_payload" type="Dictionary" setter="set_custom_payload" getter="get_custom_payload" default="{}">
+		</member>
+		<member name="event_tag" type="StringName" setter="set_event_tag" getter="get_event_tag" default="&amp;&quot;&quot;">
+		</member>
+		<member name="magnitude" type="float" setter="set_magnitude" getter="get_magnitude" default="1.0">
+		</member>
+	</members>
+</class>

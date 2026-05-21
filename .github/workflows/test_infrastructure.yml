@@ -1,0 +1,237 @@
+name: 🧱 Test Infrastructure
+
+on:
+  workflow_call:
+    outputs:
+      godot-bin-name:
+        description: "Name of the downloaded Godot binary"
+        value: ${{ jobs.build-infra.outputs.godot-bin-name }}
+
+jobs:
+  build-infra:
+    name: 🏗️ Build Infrastructure
+    if: "!contains(github.event.head_commit.message, '[tests skip]')"
+    runs-on: ubuntu-latest
+    outputs:
+      godot-bin-name: ${{ steps.godot.outputs.bin-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          submodules: recursive
+
+      - name: Setup SCons
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y scons build-essential
+
+      - name: Import dependency versions
+        shell: bash
+        run: |
+          grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
+          GC_VER=$(grep "GODOT_CPP_API_VERSION=" deps.env | cut -d "=" -f 2 | tr -d " ")
+          echo "GODOT_CPP_VERSION=$GC_VER" >> "$GITHUB_ENV"
+
+      - name: Fetch godot-cpp
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: godotengine/godot-cpp
+          ref: ${{ env.GODOT_CPP_VERSION }}
+          path: godot-cpp
+          submodules: recursive
+
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: linux
+
+      - name: Restore SCons Cache
+        uses: ./.github/actions/zyris-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons_cache
+          cache-name: infra-linux-${{ env.GODOT_VERSION }}
+
+      - name: Build Standard Plugin
+        shell: bash
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons_cache
+        run: |
+          scons target=editor platform=linux -j$(nproc)
+
+      - name: Build Template Release (for export)
+        shell: bash
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons_cache
+        run: |
+          scons target=template_release platform=linux arch=x86_64 -j$(nproc)
+
+      - name: Prepare Artifacts
+        shell: bash
+        run: |
+          mkdir -p dist/standard
+          cp -r addons dist/standard/
+
+          # Copy compiled extensions to demo (both editor and template_release for export)
+          mkdir -p demo/addons/ability_system/bin
+          find addons/ability_system/bin -name "libability_system.linux.*.so" -exec cp {} demo/addons/ability_system/bin/ \;
+
+          # Verify binaries are in place
+          echo "=== Verifying compiled binaries ==="
+          echo "In addons/ability_system/bin/:"
+          ls -lh addons/ability_system/bin/*.so 2>/dev/null || echo "No .so files found!"
+
+          echo -e "\nIn dist/standard/addons/ability_system/bin/:"
+          ls -lh dist/standard/addons/ability_system/bin/*.so 2>/dev/null || echo "No .so files found!"
+
+          echo -e "\nIn demo/addons/ability_system/bin/:"
+          ls -lh demo/addons/ability_system/bin/*.so 2>/dev/null || echo "No .so files found!"
+
+      - name: Save SCons Cache
+        uses: ./.github/actions/zyris-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons_cache
+          cache-name: infra-linux-${{ env.GODOT_VERSION }}
+
+      - name: Download Godot Binary
+        id: godot
+        shell: bash
+        run: |
+          # Try different filename formats
+          GODOT_FILE1="Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64.zip"
+          GODOT_FILE2="Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          GODOT_EXTRACTED="Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64"
+
+          URL1="${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${GODOT_FILE1}"
+          URL2="${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${GODOT_FILE2}"
+
+          echo "Attempting to download from: $URL1"
+          wget --tries=3 --waitretry=5 "$URL1" -O godot.zip 2>/dev/null
+
+          if [ ! -f godot.zip ] || [ ! -s godot.zip ]; then
+            echo "First attempt failed, trying alternative filename..."
+            wget --tries=3 --waitretry=5 "$URL2" -O godot.zip 2>/dev/null
+          fi
+
+          if [ ! -f godot.zip ] || [ ! -s godot.zip ]; then
+            echo "Primary downloads failed, trying mirror..."
+            wget --tries=3 --waitretry=5 "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${GODOT_FILE2}" -O godot.zip
+          fi
+
+          if [ ! -f godot.zip ] || [ ! -s godot.zip ]; then
+            echo "ERROR: Failed to download Godot binary"
+            exit 1
+          fi
+
+          unzip -q godot.zip
+
+          # Find the extracted binary (name might vary)
+          BINARY=$(find . -maxdepth 1 -name "Godot_v*" -type f -executable | head -1)
+          if [ -z "$BINARY" ]; then
+            echo "ERROR: Could not find Godot binary after extraction"
+            ls -la
+            exit 1
+          fi
+
+          chmod +x "$BINARY"
+          mkdir -p dist/godot
+          cp "$BINARY" dist/godot/
+          BINARY_NAME=$(basename "$BINARY")
+          echo "bin-name=$BINARY_NAME" >> "$GITHUB_OUTPUT"
+          echo "Downloaded: $BINARY_NAME"
+
+      - name: Download & Install Export Templates
+        shell: bash
+        run: |
+          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
+          mkdir -p "$TEMPLATES_DIR"
+
+          TEMPLATES_FILE1="Godot_v${GODOT_VERSION_FOR_EXPORT}_export_templates.tpz"
+          TEMPLATES_FILE2="Godot_v${GODOT_VERSION}_export_templates.tpz"
+
+          cd /tmp
+          echo "Attempting to download templates: $TEMPLATES_FILE1"
+          wget --tries=3 --waitretry=5 ${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${TEMPLATES_FILE1} 2>/dev/null
+
+          if [ ! -f "$TEMPLATES_FILE1" ] || [ ! -s "$TEMPLATES_FILE1" ]; then
+            echo "First attempt failed, trying alternative filename..."
+            wget --tries=3 --waitretry=5 ${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${TEMPLATES_FILE2} 2>/dev/null
+            if [ -f "$TEMPLATES_FILE2" ]; then
+              TEMPLATES_FILE="$TEMPLATES_FILE2"
+            fi
+          else
+            TEMPLATES_FILE="$TEMPLATES_FILE1"
+          fi
+
+          if [ ! -f "$TEMPLATES_FILE" ] || [ ! -s "$TEMPLATES_FILE" ]; then
+            echo "Primary downloads failed, trying mirror..."
+            wget --tries=3 --waitretry=5 https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${TEMPLATES_FILE2}
+            TEMPLATES_FILE="$TEMPLATES_FILE2"
+          fi
+
+          if [ ! -f "$TEMPLATES_FILE" ] || [ ! -s "$TEMPLATES_FILE" ]; then
+            echo "WARNING: Could not download export templates"
+            echo "This is not fatal - will continue without templates"
+          else
+            unzip -q -o ${TEMPLATES_FILE} -d "$TEMPLATES_DIR"
+            rm -f ${TEMPLATES_FILE}
+
+            if [ -d "$TEMPLATES_DIR/templates" ]; then
+              mv "$TEMPLATES_DIR/templates/"* "$TEMPLATES_DIR/" 2>/dev/null || true
+              rmdir "$TEMPLATES_DIR/templates" 2>/dev/null || true
+            fi
+
+            echo "✅ Export templates installed at $TEMPLATES_DIR"
+          fi
+
+      - name: Setup Demo Export Presets
+        shell: bash
+        run: |
+          mkdir -p demo
+          cat > demo/export_presets.cfg << 'EOF'
+          [preset.0]
+          name="Linux Client"
+          platform="Linux/X11"
+          runnable=true
+          export_filter="all_resources"
+          include_filter=""
+          exclude_filter=""
+          export_path="../../dist/demo_client/demo_linux_client"
+          [preset.0.options]
+          application/run/main_scene="res://ui/user_registration.tscn"
+
+          [preset.1]
+          name="Linux Server"
+          platform="Linux/X11"
+          runnable=true
+          export_filter="all_resources"
+          include_filter=""
+          exclude_filter=""
+          export_path="../../dist/demo_server/demo_linux_server"
+          [preset.1.options]
+          application/run/main_scene="res://server/server.tscn"
+          EOF
+
+      - name: Export Demo Client & Server
+        shell: bash
+        env:
+          GODOT_BIN: ${{ github.workspace }}/dist/godot/${{ steps.godot.outputs.bin-name }}
+        run: |
+          cd demo
+
+          echo "🔨 Exporting Demo Client..."
+          mkdir -p ../dist/demo_client
+          ${GODOT_BIN} --headless --path . --export-release "Linux Client" ../dist/demo_client/demo_linux_client
+          chmod +x ../dist/demo_client/demo_linux_client
+
+          echo "🔨 Exporting Demo Server..."
+          mkdir -p ../dist/demo_server
+          ${GODOT_BIN} --headless --path . --export-release "Linux Server" ../dist/demo_server/demo_linux_server
+          chmod +x ../dist/demo_server/demo_linux_server
+
+          echo "✅ Demo Client & Server exported successfully"
+
+      - name: Save Test Binaries to Cache
+        uses: actions/cache/save@v4
+        with:
+          path: dist/
+          key: ${{ github.sha }}-test-binaries

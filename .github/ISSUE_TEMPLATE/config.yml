@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Bug Reports
+    url: https://github.com/brunosrz/AbilitySystem/issues
+    about: Please report bugs and issues related to the Ability System here.
+
+  - name: Feature Requests & Discussions
+    url: https://github.com/brunosrz/AbilitySystem/discussions
+    about: Please propose new features or ask for technical support on the discussions board.

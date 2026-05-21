@@ -1,0 +1,143 @@
+name: 🧪 Unit Tests (Linux GDExtension)
+
+on:
+  workflow_call:
+    inputs:
+      godot-bin-name:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  test-unit-gdextension:
+    name: 🧩 Pure AbilitySystem (Unit)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Ability System
+        uses: actions/checkout@v4.2.2
+        with:
+          submodules: recursive
+
+      - name: Import dependency versions
+        shell: bash
+        run: grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
+
+      - name: Checkout godot-cpp
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: godotengine/godot-cpp
+          ref: ${{ env.GODOT_CPP_API_VERSION }}
+          path: godot-cpp
+          submodules: recursive
+
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: linux
+
+      - name: Build godot-cpp (generates bindings incl. gdvirtual.gen.inc)
+        shell: bash
+        run: |
+          echo "=== Building godot-cpp ==="
+          scons -C godot-cpp platform=linux arch=x86_64 target=editor -j$(nproc) 2>&1 | tail -50
+
+          # Verify gdvirtual.gen.inc was generated (it's in include subdirectory)
+          if [ ! -f "godot-cpp/gen/include/godot_cpp/core/gdvirtual.gen.inc" ]; then
+            echo "ERROR: gdvirtual.gen.inc not found after godot-cpp compilation"
+            echo "Checking godot-cpp/gen directory:"
+            find godot-cpp/gen -type f 2>/dev/null | head -50
+            exit 1
+          fi
+          echo "✅ godot-cpp built successfully"
+
+      - name: Restore SCons Cache
+        uses: ./.github/actions/zyris-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons_cache
+          cache-name: infra-linux-${{ env.GODOT_VERSION }}
+
+      - name: Setup Includes for Unit Tests
+        shell: bash
+        run: |
+          # Create symlink for generated godot_cpp headers so includes work correctly
+          if [ ! -d "godot_cpp" ]; then
+            ln -s godot-cpp/gen/godot_cpp godot_cpp
+          fi
+
+      - name: Build GDExtension Unit Tests
+        shell: bash
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons_cache
+        run: |
+          scons target=editor platform=linux arch=x86_64 tests=unit -j$(nproc)
+
+          # Verify binary was created (it goes to bin/test-unit/ when compiled with tests=unit)
+          echo "=== Checking for compiled binaries ==="
+          find addons/ability_system/bin -type f -name "*.so" -o -name "*.dll"
+
+          if [ ! -f "addons/ability_system/bin/test-unit/libability_system.linux.editor.x86_64.so" ]; then
+            echo "ERROR: Expected binary not found!"
+            echo "Checking addons/ability_system/bin contents:"
+            find addons/ability_system/bin -type f
+            exit 1
+          fi
+
+          # Copy to expected location for .gdextension
+          mkdir -p addons/ability_system/bin
+          cp addons/ability_system/bin/test-unit/libability_system.linux.editor.x86_64.so addons/ability_system/bin/
+          echo "✅ Binary copied to correct location"
+
+      - name: Download Godot Engine
+        run: |
+          GODOT_FILE1="Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64.zip"
+          GODOT_FILE2="Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+
+          echo "Attempting to download: $GODOT_FILE1"
+          wget --timeout=30 --tries=3 ${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${GODOT_FILE1} -O godot.zip 2>/dev/null
+
+          if [ ! -s godot.zip ]; then
+            echo "First attempt failed, trying alternative filename..."
+            wget --timeout=30 --tries=3 ${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${GODOT_FILE2} -O godot.zip 2>/dev/null
+          fi
+
+          if [ ! -s godot.zip ]; then
+            echo "Primary download failed, trying mirror..."
+            wget --timeout=30 --tries=3 https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${GODOT_FILE2} -O godot.zip
+          fi
+
+          unzip -q godot.zip
+          BINARY=$(find . -maxdepth 1 -name "Godot_v*" -type f -executable | head -1)
+          mv "$BINARY" godot_headless
+          chmod +x godot_headless
+
+      - name: Run GDExtension Test Runner
+        run: |
+          # Creates a mock Godot project and a GDScript test runner
+          mkdir -p test_project
+          cp -r addons test_project/
+          echo 'config_version=5' > test_project/project.godot
+
+          # Verify GDExtension binary is accessible from test_project
+          if [ -f "test_project/addons/ability_system/bin/libability_system.linux.editor.x86_64.so" ]; then
+            echo "✅ GDExtension binary accessible"
+            file test_project/addons/ability_system/bin/libability_system.linux.editor.x86_64.so
+          else
+            echo "❌ GDExtension binary NOT accessible!"
+            ls -la test_project/addons/ability_system/bin/ || echo "Directory missing!"
+            exit 1
+          fi
+
+          # GDScript runner that hooks into the C++ `AbilitySystem::run_tests()`
+          echo '
+          extends SceneTree
+          func _init():
+              print("Firing AS Unit Tests...")
+              if not ClassDB.class_exists("AbilitySystem"):
+                  print("ERROR: AbilitySystem class not found!")
+                  quit(1)
+              var result = AbilitySystem.run_tests()
+              quit(result)
+          ' > test_project/run_tests.gd
+
+          # Run headless tests using the standalone engine loading the GDExtension DLL
+          ./godot_headless --path test_project --headless -s run_tests.gd

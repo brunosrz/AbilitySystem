@@ -1,0 +1,295 @@
+# Limpeza da Demo Layer
+
+## 1 Análise e Remoção da Pasta Gameplay
+
+**Descobertas**:
+
+- 📁 Pasta: `demo/gameplay/` (26 arquivos, 13 scripts .gd)
+- 📂 Estrutura:
+  - `core/` - Behaviormachine.gd, BehaviorStates.gd (estado do plugin legado)
+  - `Machines/` - Máquinas de estado específicas do jogo (Pause, Menu, etc.)
+  - `resources/` - Configurações de máquinas de estado (resources .tres)
+
+**Análise de Dependências**:
+
+- `demo/autoload/Gamemachine.gd` extends `machine` (classe do gameplay)
+- `demo/.godot/global_script_class_cache.cfg` referencia `BehaviorStates`
+- Sistema é completamente separado do Ability System (não há conflito direto)
+
+**Ação**:
+
+1. Deletar pasta `demo/gameplay/` completamente
+   Atualizar `demo/autoload/Gamemachine.gd` para não estender classe legada
+2. Remover cache de classes globais do Godot
+
+## 2 Refatoração de Markdowns da Demo
+
+**Arquivos Identificados**:
+
+```
+demo/
+├── BehaviorStateEngineering.md        ← Documentação do sistema legado
+├── GEMINI.md                          ← Desconhecido, requer análise
+├── HashMap.md                         ← Possível documentação interna
+├── README.md                          ← README principal da demo
+├── StateIndex.md                      ← Index de estados (legado?)
+└── addons/ability_system/
+    ├── README.md                      ← README English
+    ├── README.pt.md                   ← README Português
+    ├── release_note.md                ← Release notes English
+    └── release_note.pt.md             ← Release notes Português
+```
+
+**Estratégia de Refatoração**:
+
+### 1 Remover/Reorganizar Markdowns Legados
+
+- ❌ Deletar: `BehaviorStateEngineering.md` (sistema descontinuado)
+- ❓ Revisar: `GEMINI.md`, `HashMap.md`, `StateIndex.md` (determinar relevância)
+
+### 2 Criar Novo README para Ability System Demo
+
+**Arquivo**: `demo/ABILITY_SYSTEM_DEMO.md`
+
+Conteúdo esperado:
+
+```markdown
+# Ability System - Demo Scene
+
+# Overview
+
+A cena de demo demonstra como usar o Ability System para:
+
+- Movimentação do player (Idle, Walk, Run, Jump, Fall, Dash)
+- Sistema de habilidades (Combo, Heavy Attack, Dash Attack)
+- Rastreamento de estado via tags (NAME, CONDITIONAL, EVENT)
+- UI responsiva com sinais tag_changed
+
+# Arquitetura
+
+## Player Component (demo/player/)
+
+- `player.tscn` - Cena principal com CharacterBody2D
+- `player.gd` - Lógica do player
+- `player_animations.tres` - Biblioteca de animações
+- `resources/hotbar.tres` - Sistema de inventário
+
+## UI Component (demo/ui/)
+
+- `hud.tscn` - HUD principal
+- `hud.gd` - Rastreamento de estado e atributos
+  - Conectado a `ASComponent.tag_changed` signal
+  - Exibição de health/stamina bars
+  - Estado atual colorizado
+  - Histórico de ativações
+
+## Resources (demo/resources/)
+
+- `abilities/` - Definições de habilidades (ability\_\*.tres)
+- `attributes/` - Definições de atributos (attr\_\*.tres)
+- `effects/` - Definições de efeitos (effect\_\*.tres)
+- `packages/` - Pacotes de entrega (package\_\*.tres)
+
+# Key Concepts
+
+## Tag System
+
+- **NAME**: Tags persistentes (weapon.unarmed, weapon.sword)
+- **CONDITIONAL**: Tags condicionais que podem ser removidas
+- **EVENT**: Tags de eventos únicos
+
+## Ability Flow
+
+1. Player input → ASComponent.try_activate_ability_by_tag()
+   Habilidade executa fases
+2. Efeitos são disparados (ASDelivery, ASPackage)
+3. Sinais são emitidos (ability_activated, tag_changed)
+
+## UI Binding
+
+- HUD se conecta via `asc.tag_changed.connect(_on_asc_tag_changed)`
+- Atualiza estado de forma reativa (não polling)
+- Formata tags para exibição legível
+
+# Running the Demo
+
+1. Abra `demo/demo.tscn`
+   Pressione Play
+2. WASD para mover, Space para pular, Mouse Click para atacar
+
+# Debugging
+
+Console prints adicionados em:
+
+- `demo/ui/hud.gd`: "[HUD] tag_changed", "[HUD] State updated"
+- `demo/player/player.gd`: "[State] Activating motion.\*", "[Tag Color]"
+```
+
+### 3 Atualizar README Principal
+
+**Arquivo**: `demo/README.md`
+
+Conteúdo:
+
+```markdown
+# Demo - Ability System v4.6
+
+Esta pasta contém uma cena de demonstração funcional do Ability System.
+
+# Quick Start
+
+- Cena principal: `demo.tscn`
+- Cena do player: `player/player.tscn`
+- HUD: `ui/hud.tscn`
+
+# Documentação Completa
+
+- [Ability System Demo Guide](ABILITY_SYSTEM_DEMO.md)
+- [Framework Documentation](../src/doc_classes/)
+- [Business Rules](../BUSINESS_RULES.pt.md)
+
+# Estrutura
+
+- `player/` - Player controller e assets
+- `ui/` - Interface de usuário
+- `resources/` - Dados de configuração (habilidades, atributos, efeitos)
+- `autoload/` - Autoloads da demo
+```
+
+## 3 Remover Dependências de Camera e Animation Legadas
+
+**Verificar**:
+
+```bash
+# Procurar por scripts de câmera legados
+find demo -name "*camera*" -o -name "*animation*" | grep -v ".godot"
+
+# Procurar por nodes que referenciam sistemas antigos
+grep -r "extends machine" demo --include="*.gd"
+```
+
+**Ação**: Remover qualquer script que estenda `machine` ou implemente lógica de estado legada.
+
+---
+
+# FASE 3: Resolução de Erros de Teste GDExtension
+
+## 3.1 Protected Method Access Errors
+
+**Problema**: Unit tests acessam métodos/construtores protegidos de ASComponent
+
+**Contexto**: Friend classes foram adicionadas a `as_component.h`, mas testes ainda falham
+
+**Ação Necessária**:
+
+1. Revisar erros específicos do build GDExtension
+   Adicionar friend declarations adicionais se necessário:
+   ```cpp
+   // em as_component.h
+   friend class TestASComponent;
+   friend class TestASComponentRollback;
+   ```
+2. Ou refatorar testes para não acessar métodos protegidos diretamente
+
+---
+
+# FASE 4: Validação de Estado do Player
+
+## 4.1 Verificação de Colorização
+
+**Status Atual**: Player não coloriza baseado em estado (bug não resolvido)
+
+**Próximas Ações**:
+
+1. Verificar se `tag_changed` signal está disparando
+   Verificar se `_on_tag_changed()` está sendo chamado
+2. Adicionar logs adicionais em `demo/player/player.gd`
+
+---
+
+# Ordem de Execução
+
+## Imediato (Build Blocker):
+
+1. ✅ **CONCLUÍDO**: Compilar C++ com Time includes
+   **EM PROGRESSO**: Executar GHA build para confirmar sucesso
+2. ⏳ **PENDENTE**: Resolver testes GDExtension (se houver erros)
+
+## Curto Prazo (Demo Cleanup):
+
+4. Deletar `demo/gameplay/`
+5. Refatorar `demo/autoload/Gamemachine.gd`
+6. Refatorar markdowns da demo
+7. Executar demo e validar funcionamento
+
+## Médio Prazo (Polish):
+
+8. Debugar player colorization
+9. Documentar padrões de uso do Ability System
+10. Criar exemplos adicionais
+
+---
+
+# Checklist de Implementação
+
+## C++ Framework (✅ CONCLUÍDO)
+
+- [x] Adicionar include `core/os/time.h`
+- [x] Envolver Time::get_singleton() com ifdef
+- [x] Compilação local validada
+
+## Demo Layer - Fase 1
+
+- [ ] Deletar `demo/gameplay/`
+- [ ] Remover cache de classes globais Godot
+- [ ] Atualizar `Gamemachine.gd` ou remover se necessário
+
+## Demo Layer - Fase 2
+
+- [ ] Criar `demo/ABILITY_SYSTEM_DEMO.md`
+- [ ] Atualizar `demo/README.md`
+- [ ] Remover/reorganizar markdowns legados
+
+## Validação
+
+- [ ] GHA build passou (module + gdextension)
+- [ ] Demo executa sem erros
+- [ ] Player coloriza baseado em estado
+- [ ] HUD exibe estado corretamente
+
+---
+
+# Arquivos Afetados
+
+## C++
+
+- `src/scene/as_component.cpp` ✅
+
+## GDScript (Demo)
+
+- `demo/autoload/Gamemachine.gd` ⏳
+- `demo/ui/hud.gd` ✅ (já refatorado na sessão anterior)
+- `demo/player/player.gd` ✅ (já refatorado)
+
+## Markdown
+
+- `demo/README.md` ⏳
+- `demo/ABILITY_SYSTEM_DEMO.md` ⏳ (criar novo)
+- `demo/BehaviorStateEngineering.md` ❌ (deletar)
+
+## Folders
+
+- `demo/gameplay/` ❌ (deletar completamente)
+
+---
+
+# Notas Importantes
+
+1. **Gamemachine**: Pode ser mantido se refatorado para NÃO estender machine (usar simple Node ou Control)
+   **Tag System**: Funciona corretamente - HUD foi corrigido em sessão anterior
+2. **C++ Compilation**: Agora deve passar em module e gdextension targets
+3. **Tests**: Podem precisar de refatoração para acessar public API em vez de protegida
+
+---
+
+**Próximo Passo**: Iniciar Fase 2 - Deletar demo/gameplay/ e refatorar markdowns

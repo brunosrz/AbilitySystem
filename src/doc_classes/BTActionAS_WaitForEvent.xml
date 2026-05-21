@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTActionAS_WaitForEvent" inherits="BTAction" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BTAction that waits for an Ability System event to occur.
+	</brief_description>
+	<description>
+		A Behavior Tree action that enters [constant BT.RUNNING] state and waits for a specific ASEventTag to occur. Uses [method ASComponent.has_event_occurred] to check the Events Historical buffer.
+		Returns [constant BT.SUCCESS] when event is detected within the time window, continues [constant BT.RUNNING] while waiting.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="asc_node_path" type="NodePath" setter="set_asc_node_path" getter="get_asc_node_path" default="NodePath(&quot;&quot;)">
+		</member>
+		<member name="event_tag" type="StringName" setter="set_event_tag" getter="get_event_tag" default="&amp;&quot;&quot;">
+		</member>
+		<member name="time_window" type="float" setter="set_time_window" getter="get_time_window" default="0.5">
+		</member>
+	</members>
+</class>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ASBridgeState" inherits="LimboState" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		LimboState with integrated Ability System support.
+	</brief_description>
+	<description>
+		A [LimboState] that integrates with Ability System. Provides automatic event dispatching on state transitions and event listening for automatic transitions.
+		Can require specific tags to be present before entering, and dispatches AS events on [code]_enter[/code], [code]_exit[/code], and [code]_update[/code].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="can_enter_state" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="agent" type="Node" />
+			<description>
+				Returns [code]true[/code] if this state can be entered (checks required tags if [member check_tags_on_enter] is enabled).
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="asc_node_path" type="NodePath" setter="set_asc_node_path" getter="get_asc_node_path" default="NodePath(&quot;&quot;)">
+		</member>
+		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard" overrides="LimboState" />
+		<member name="check_tags_on_enter" type="bool" setter="set_check_tags_on_enter" getter="get_check_tags_on_enter" default="true">
+		</member>
+		<member name="enter_events" type="StringName[]" setter="set_enter_events" getter="get_enter_events" default="[]">
+		</member>
+		<member name="exit_events" type="StringName[]" setter="set_exit_events" getter="get_exit_events" default="[]">
+		</member>
+		<member name="listen_events" type="StringName[]" setter="set_listen_events" getter="get_listen_events" default="[]">
+		</member>
+		<member name="required_tags" type="StringName[]" setter="set_required_tags" getter="get_required_tags" default="[]">
+		</member>
+		<member name="transition_event" type="StringName" setter="set_transition_event" getter="get_transition_event" default="&amp;&quot;&quot;">
+		</member>
+		<member name="update_events" type="StringName[]" setter="set_update_events" getter="get_update_events" default="[]">
+		</member>
+	</members>
+</class>

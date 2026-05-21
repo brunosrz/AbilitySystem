@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ASAbilityPhase" inherits="ASAbility" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Base resource for defining abilities within the module.
+	</brief_description>
+	<description>
+		[ASAbility] defines the logic and data for a specific action. It manages its own costs, cooldowns, and tags.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a bug with the Ability System
+body:
+  - type: markdown
+    attributes:
+      value: |
+        - Write a descriptive issue title above.
+        - Search [open](https://github.com/brunosrz/AbilitySystem/issues) and [closed](https://github.com/brunosrz/AbilitySystem/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported.
+
+  - type: input
+    attributes:
+      label: Zyris Engine version
+      description: >
+        Specify the Git commit hash or exact version of your Zyris Engine build.
+      placeholder: v4.x.stable [92bee43ad]
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Ability System version
+      description: >
+        Specify the version or Git commit hash of the Ability System plugin you are using.
+      placeholder: v0.1.0-stable [9d1c396c5]
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: System information
+      description: |
+        Specify your Operating System and architecture.
+      placeholder: Windows 11 x86_64
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Issue description
+      description: |
+        Describe your issue briefly. What doesn't work, and how do you expect it to work instead?
+        You can include images or videos with drag and drop, and format code blocks or logs with <code>```</code> tags.
+    validations:
+      required: true
