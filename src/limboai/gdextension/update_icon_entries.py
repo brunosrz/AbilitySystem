@@ -51,7 +51,12 @@ def update_icon_entries(silent=False):
 
     icon_files.sort()
     for icon_file in icon_files:
-        new_content += os.path.splitext(icon_file)[0] + ' = "res://addons/limboai/icons/' + icon_file + '"\n'
+        new_content += (
+            os.path.splitext(icon_file)[0]
+            + ' = "res://addons/limboai/icons/'
+            + icon_file
+            + '"\n'
+        )
 
     if new_content != content:
         f = open(config_path, "w")

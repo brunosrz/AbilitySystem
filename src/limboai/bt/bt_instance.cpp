@@ -1,3 +1,33 @@
+/**************************************************************************/
+/*  bt_instance.cpp                                                       */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
+
 /**
  * bt_instance.cpp
  * =============================================================================
@@ -165,7 +195,8 @@ BTInstance::~BTInstance() {
 }
 
 void _capture_task_state(Ref<BTTask> p_task, Array &r_status_list, Array &r_elapsed_list) {
-	if (p_task.is_null()) return;
+	if (p_task.is_null())
+		return;
 	r_status_list.push_back((int)p_task->get_status());
 	r_elapsed_list.push_back((double)p_task->get_elapsed_time());
 	for (int i = 0; i < p_task->get_child_count(); i++) {
@@ -176,7 +207,7 @@ void _capture_task_state(Ref<BTTask> p_task, Array &r_status_list, Array &r_elap
 Dictionary BTInstance::capture_state() const {
 	Dictionary state;
 	state["last_status"] = (int)last_status;
-	
+
 	Ref<Blackboard> bb = get_blackboard();
 	if (bb.is_valid()) {
 		state["blackboard"] = bb->get_vars_as_dict();
@@ -192,7 +223,8 @@ Dictionary BTInstance::capture_state() const {
 }
 
 void _restore_task_state(Ref<BTTask> p_task, const Array &p_status_list, const Array &p_elapsed_list, int &r_index) {
-	if (p_task.is_null() || r_index >= p_status_list.size()) return;
+	if (p_task.is_null() || r_index >= p_status_list.size())
+		return;
 	p_task->set_status((BT::Status)(int)p_status_list[r_index]);
 	p_task->set_elapsed_time((double)p_elapsed_list[r_index]);
 	r_index++;

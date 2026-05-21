@@ -47,9 +47,13 @@ def fix_import_file(file_path):
     file.close()
 
     for line in old_lines:
-        line = line.replace("editor/scale_with_editor_scale=false", "editor/scale_with_editor_scale=true")
         line = line.replace(
-            "editor/convert_colors_with_editor_theme=false", "editor/convert_colors_with_editor_theme=true"
+            "editor/scale_with_editor_scale=false",
+            "editor/scale_with_editor_scale=true",
+        )
+        line = line.replace(
+            "editor/convert_colors_with_editor_theme=false",
+            "editor/convert_colors_with_editor_theme=true",
         )
         new_lines.append(line)
 
