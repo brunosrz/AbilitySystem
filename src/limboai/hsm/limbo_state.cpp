@@ -98,7 +98,7 @@ LimboState *LimboState::get_root() const {
 	while (state->get_parent() && IS_CLASS(state->get_parent(), LimboState)) {
 		state = state->get_parent();
 	}
-	return const_cast<LimboState *>(Object::cast_to<LimboState>(state));
+	return Object::cast_to<LimboState>(const_cast<Node *>(state));
 }
 
 LimboState *LimboState::named(const String &p_name) {
