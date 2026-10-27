@@ -1,0 +1,51 @@
+language: en-US
+
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - ".*"
+    auto_pause_after_reviewed_commits: 0
+  path_instructions:
+    - path: "**"
+      instructions: |
+        Tests are part of the change contract. Require happy-path, negative/error,
+        and regression coverage for every behavior change. For stateful,
+        concurrent, persistent, or multiplayer changes also require retry,
+        cancellation, conflict, recovery, and idempotency cases when applicable.
+        Do not treat a build, a skipped test, or a reported result as proof of
+        runtime behavior. Check assertions over state and observable effects.
+
+        Check Godot and GDExtension compatibility, native ownership and lifetime,
+        deterministic rollback, thread safety, error propagation, plugin metadata,
+        release packaging, and supported-platform declarations.
+
+        For CI changes, verify that the intended gate actually fails when proof is
+        missing, that exit codes propagate, that caches and artifacts are scoped,
+        and that permissions are least-privilege. Report concrete file paths,
+        failure scenarios, and the test/evidence required to close each finding.
+    - path: "src/**/*.{cpp,h,hpp,cc,hh}"
+      instructions: |
+        Require native unit, negative, and regression tests for changed behavior.
+        Inspect memory ownership, Godot API compatibility, initialization and
+        shutdown, rollback determinism, and concurrency.
+    - path: ".github/workflows/**"
+      instructions: |
+        Verify workflow triggers, permissions, pinned actions, shell quoting,
+        cleanup, artifact provenance, and failure propagation. Any changed gate
+        needs a negative proof that the gate rejects invalid input.
+
+chat:
+  auto_reply: true
+  art: false
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
