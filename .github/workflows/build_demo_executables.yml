@@ -10,13 +10,13 @@ on:
 jobs:
   build-demo:
     name: 🎮 Build Demo (Client & Server - All Platforms)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       actions: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -219,7 +219,7 @@ jobs:
           echo "✅ Total files: $(ls artifacts/ | wc -l)"
 
       - name: 📤 Upload Demo Executables
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: demo-executables-${{ inputs.plugin_version }}
           path: artifacts/
@@ -263,7 +263,7 @@ jobs:
           EOF
 
       - name: 📤 Upload Manifest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: demo-manifest-${{ inputs.plugin_version }}
           path: DEMO_MANIFEST.md

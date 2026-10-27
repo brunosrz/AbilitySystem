@@ -11,12 +11,12 @@ jobs:
   build-infra:
     name: 🏗️ Build Infrastructure
     if: "!contains(github.event.head_commit.message, '[tests skip]')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       godot-bin-name: ${{ steps.godot.outputs.bin-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           echo "GODOT_CPP_VERSION=$GC_VER" >> "$GITHUB_ENV"
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           repository: godotengine/godot-cpp
           ref: ${{ env.GODOT_CPP_VERSION }}

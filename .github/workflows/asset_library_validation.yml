@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
 
       - name: Validate plugin metadata
         run: python3 utility/validate_asset_library.py
@@ -48,7 +48,7 @@ jobs:
           fi
 
       - name: Upload package manifest
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v5
         with:
           name: ability-system-asset-library-manifest
           path: package/SHA256SUMS

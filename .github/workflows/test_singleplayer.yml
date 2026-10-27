@@ -14,10 +14,10 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[tests skip]') &&
       !contains(github.event.head_commit.message, '[integration skip]')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
 
       - name: Restore Test Binaries from Cache
         uses: actions/cache/restore@v4
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload Singleplayer Test Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: singleplayer-test-log
           path: singleplayer_test.log

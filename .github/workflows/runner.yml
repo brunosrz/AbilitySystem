@@ -29,10 +29,10 @@ permissions:
 jobs:
   pre-commit:
     name: ⚙️ Pre-commit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
       - name: Code style checks
         uses: pre-commit/action@v3.0.1
         with:
@@ -40,13 +40,13 @@ jobs:
 
   init-version:
     name: 🏁 Init Version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       name-prefix: ${{ steps.init.outputs.name-prefix }}
       plugin-version: ${{ steps.init.outputs.plugin-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Init version vars
@@ -105,7 +105,7 @@ jobs:
 
   post-release:
     name: 🚀 Final Delivery (GitHub Release)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       actions: read
@@ -117,7 +117,7 @@ jobs:
     needs: [init-version, module-builds, package-plugin, build-demo]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
 
       - name: Import dependency versions
         shell: bash

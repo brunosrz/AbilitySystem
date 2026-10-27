@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Ability System
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           submodules: recursive
@@ -36,7 +36,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Checkout ZyrisEngine (no-ability-system)
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           repository: ${{ env.ZYRIS_REPO }}
           ref: ${{ env.ZYRIS_BRANCH }}
@@ -157,7 +157,7 @@ jobs:
           fi
 
       - name: Upload Zyris Binary (with Module)
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.artifact_name }}
           path: ${{ env.artifact_path }}
