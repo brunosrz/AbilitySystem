@@ -5,7 +5,7 @@ Get started with the Ability System multiplayer demo featuring RBAC and admin co
 ## 🎮 Starting the Game
 
 ### From Editor
-1. Open the project in Godot 4.6+
+1. Open the project in Godot 4.7+
 2. Select the main scene (user_registration.tscn is default)
 3. Press F5 to run
 

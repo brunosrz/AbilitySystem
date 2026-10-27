@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Esta cena de demonstração funcional exemplifica como utilizar o Ability System v4.6 para:
+Esta cena de demonstração funcional exemplifica como utilizar o Ability System 0.1 para:
 
 - **Movimentação do Player**: Idle, Walk, Run, Jump, Fall, Dash
 - **Sistema de Habilidades**: Combo Attack, Heavy Attack, Dash Attack

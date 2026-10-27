@@ -1,6 +1,6 @@
-# Demo - Ability System v4.6 + Multiplayer RBAC
+# Demo - Ability System v0.1 + Multiplayer RBAC
 
-Demonstração completa do **Ability System** com suporte a **Multiplayer, RBAC (Role-Based Access Control), e Admin Tools** para Godot 4.6+.
+Demonstração completa do **Ability System** com suporte a **Multiplayer, RBAC (Role-Based Access Control), e Admin Tools** para Godot 4.7+.
 
 ## 🚀 Quick Start
 
@@ -161,9 +161,9 @@ Android:    demo_android_client.apk, demo_android_server.apk
 
 Veja `.github/workflows/build_demo_executables.yml`
 
-### Manual (Godot 4.6.1+)
+### Manual (Godot 4.7.2+)
 ```bash
-# Baixar Godot 4.6.1 e templates
+# Baixar Godot 4.7.2 e templates
 godot --path . --export-release "Windows Desktop" ../demo_windows_client.exe
 godot --path . --export-release "Linux/X11" ../demo_linux_client
 ```
@@ -210,4 +210,4 @@ Consulte:
 
 ---
 
-**Versão**: 4.6 with Multiplayer RBAC | **Godot**: 4.6+ | **Linguagem**: GDScript
+**Versão**: 0.1 com Multiplayer RBAC | **Godot**: 4.7+ | **Linguagem**: GDScript
