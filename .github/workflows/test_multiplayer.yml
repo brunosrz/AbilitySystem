@@ -19,7 +19,7 @@ jobs:
       server-ready: ${{ steps.server.outputs.ready }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Import dependency versions
         shell: bash
@@ -27,7 +27,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload Server Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mp-server-log
           path: logs/server.log
@@ -105,7 +105,7 @@ jobs:
         player_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Import dependency versions
         shell: bash
@@ -113,7 +113,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload Client Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mp-client-log-${{ matrix.player_id }}
           path: logs/client_${{ matrix.player_id }}.log
@@ -196,17 +196,17 @@ jobs:
     if: always() && needs.run-clients.result != 'skipped'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Download All Client Logs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: mp-client-log-*
           path: all-logs
           merge-multiple: false
 
       - name: Download Server Log
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: mp-server-log
           path: all-logs

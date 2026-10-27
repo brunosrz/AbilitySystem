@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
 
@@ -34,7 +34,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           repository: godotengine/godot-cpp
           ref: ${{ inputs.godot-cpp-version }}
@@ -77,7 +77,7 @@ jobs:
           find addons/${{ env.MODULE_NAME }}/bin/ -maxdepth 1 -name "*.dylib" -exec cp {} tmp-builds/out/addons/${{ env.MODULE_NAME }}/bin/ \;
 
       - name: Cache Build for Packaging
-        uses: actions/cache/save@v4.2.2
+        uses: actions/cache/save@v6
         with:
           path: tmp-builds/out/
           key: tmp-bin-${{ github.run_id }}-ios-${{ matrix.arch }}-${{ matrix.float-precision }}-${{ matrix.target }}

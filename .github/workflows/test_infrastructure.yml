@@ -16,7 +16,7 @@ jobs:
       godot-bin-name: ${{ steps.godot.outputs.bin-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           echo "GODOT_CPP_VERSION=$GC_VER" >> "$GITHUB_ENV"
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           repository: godotengine/godot-cpp
           ref: ${{ env.GODOT_CPP_VERSION }}
@@ -231,7 +231,7 @@ jobs:
           echo "✅ Demo Client & Server exported successfully"
 
       - name: Save Test Binaries to Cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries

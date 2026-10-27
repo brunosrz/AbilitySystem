@@ -15,7 +15,7 @@ jobs:
       godot_cpp_version: ${{ steps.vars.outputs.godot_cpp_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - id: vars
         name: Export Version

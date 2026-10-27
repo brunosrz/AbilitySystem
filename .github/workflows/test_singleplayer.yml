@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload Singleplayer Test Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: singleplayer-test-log
           path: singleplayer_test.log
