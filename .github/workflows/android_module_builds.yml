@@ -60,7 +60,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Setup NDK
-        uses: nttld/setup-ndk@v1.5.0
+        uses: nttld/setup-ndk@v1.6.0
         with:
           ndk-version: ${{ env.NDK_VERSION }}
           add-to-path: true
