@@ -22,12 +22,11 @@ jobs:
       matrix:
         language: [cpp, python]
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5
       - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v3
-        if: matrix.language == 'cpp'
+          build-mode: none
       - uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"

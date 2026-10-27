@@ -6,9 +6,9 @@ from pathlib import Path
 def _read_version() -> tuple[int, int, int]:
     version_path = Path(__file__).resolve().parents[1] / "VERSION"
     try:
-        major_text, minor_text, patch_text = version_path.read_text(
-            encoding="utf-8"
-        ).strip().split(".")
+        major_text, minor_text, patch_text = (
+            version_path.read_text(encoding="utf-8").strip().split(".")
+        )
         return int(major_text), int(minor_text), int(patch_text)
     except (OSError, ValueError):
         return 0, 1, 0
