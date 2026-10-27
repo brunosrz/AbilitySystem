@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "pull-request-title-pattern": "chore(develop): release ${version}",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "ability-system",
+      "version-file": "VERSION",
+      "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false,
+      "extra-files": [
+        {"type": "generic", "path": "deps.env"},
+        {"type": "generic", "path": "addons/ability_system/plugin.cfg"}
+      ]
+    }
+  }
+}

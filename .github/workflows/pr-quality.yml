@@ -1,0 +1,57 @@
+name: PR quality gates
+
+on:
+  pull_request:
+    branches: ["**"]
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: pr-quality-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    name: PR metadata
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Validate title, body and release files
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          python utility/check_pr_metadata.py
+          python utility/check_release_config.py
+
+  pre-commit:
+    name: Pre-commit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files
+
+  asset-package:
+    name: Package contract
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Validate required plugin metadata
+        run: |
+          test -f addons/ability_system/plugin.cfg
+          test -f addons/ability_system/ability_system.gdextension
+          test -f addons/ability_system/README.md
+          test -f LICENSE
+          python utility/check_release_config.py

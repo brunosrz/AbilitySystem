@@ -1,8 +1,20 @@
-# Edit the following variables to change version info
+# VERSION is the single release-please managed source of truth. Keeping the
+# parsed values here preserves the existing C++ header generation API.
+from pathlib import Path
 
-major = 0
-minor = 1
-patch = 0
+
+def _read_version() -> tuple[int, int, int]:
+    version_path = Path(__file__).resolve().parents[1] / "VERSION"
+    try:
+        major_text, minor_text, patch_text = version_path.read_text(
+            encoding="utf-8"
+        ).strip().split(".")
+        return int(major_text), int(minor_text), int(patch_text)
+    except (OSError, ValueError):
+        return 0, 1, 0
+
+
+major, minor, patch = _read_version()
 status = "stable"
 doc_branch = "latest"
 
