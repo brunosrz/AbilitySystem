@@ -15,7 +15,7 @@ FORBIDDEN = re.compile(
 def main() -> int:
     title = os.environ.get("PR_TITLE", "")
     body = os.environ.get("PR_BODY", "")
-    failures = []
+    failures: list[str] = []
     if FORBIDDEN.search(title):
         failures.append(f"PR title contains planning/reviewer metadata: {title!r}")
     if FORBIDDEN.search(body):

@@ -21,6 +21,7 @@ def load_json(path: Path) -> dict[str, object]:
 def main() -> int:
     lines = load_json(ROOT / ".github" / "release-lines.json")
     versions: set[str] = set()
+    branches: dict[str, str] = {}
     for line_name in ("development", "maintenance"):
         line = lines.get(line_name)
         if not isinstance(line, dict):
@@ -28,20 +29,22 @@ def main() -> int:
         branch = line.get("branch")
         config_name = line.get("release_please_config")
         manifest_name = line.get("release_please_manifest")
-        if not all(
-            isinstance(value, str) and value
-            for value in (branch, config_name, manifest_name)
-        ):
+        if not isinstance(branch, str) or not branch:
             raise SystemExit(f"incomplete release line: {line_name}")
-        config = ROOT / str(config_name)
-        manifest = ROOT / str(manifest_name)
+        if not isinstance(config_name, str) or not config_name:
+            raise SystemExit(f"incomplete release line: {line_name}")
+        if not isinstance(manifest_name, str) or not manifest_name:
+            raise SystemExit(f"incomplete release line: {line_name}")
+        branches[line_name] = branch
+        config = ROOT / config_name
+        manifest = ROOT / manifest_name
         if not config.is_file() or not manifest.is_file():
             raise SystemExit(f"release files missing for {line_name}")
         package = load_json(manifest).get(".")
         if not isinstance(package, str) or not SEMVER.fullmatch(package):
             raise SystemExit(f"invalid manifest version for {line_name}: {package}")
         versions.add(package)
-    if lines["development"]["branch"] == lines["maintenance"]["branch"]:
+    if branches["development"] == branches["maintenance"]:
         raise SystemExit("development and maintenance branches must differ")
     version_file = ROOT / "VERSION"
     if not version_file.is_file() or not SEMVER.fullmatch(
