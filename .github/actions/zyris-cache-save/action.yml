@@ -23,7 +23,7 @@ runs:
         fi
 
     - name: Save SCons cache directory
-      uses: actions/cache/save@v4.2.2
+      uses: actions/cache/save@v5
       with:
         path: ${{ inputs.scons-cache }}
         key: ${{ inputs.cache-name }}|${{ github.ref_name }}|${{ github.sha }}

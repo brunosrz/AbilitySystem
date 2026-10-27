@@ -43,7 +43,7 @@ jobs:
 
 
       - name: Setup Java
-        uses: actions/setup-java@v4.7.0
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
@@ -89,7 +89,7 @@ jobs:
           find addons/${{ env.MODULE_NAME }}/bin/ -maxdepth 1 -name "*.so" -exec cp {} tmp-builds/out/addons/${{ env.MODULE_NAME }}/bin/ \;
 
       - name: Cache Build for Packaging
-        uses: actions/cache/save@v4.2.2
+        uses: actions/cache/save@v5
         with:
           path: tmp-builds/out/
           key: tmp-bin-${{ github.run_id }}-android-${{ matrix.arch }}-${{ matrix.float-precision }}-${{ matrix.target }}

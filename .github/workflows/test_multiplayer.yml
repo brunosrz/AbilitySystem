@@ -27,7 +27,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -113,7 +113,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries

@@ -81,7 +81,7 @@ jobs:
           find addons/${{ env.MODULE_NAME }}/bin/ -maxdepth 1 -name "*.dylib" -exec cp {} tmp-builds/out/addons/${{ env.MODULE_NAME }}/bin/ \;
 
       - name: Cache Build for Packaging
-        uses: actions/cache/save@v4.2.2
+        uses: actions/cache/save@v5
         with:
           path: tmp-builds/out/
           key: tmp-bin-${{ github.run_id }}-macos-universal-${{ matrix.float-precision }}-${{ matrix.target }}
