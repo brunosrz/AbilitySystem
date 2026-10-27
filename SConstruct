@@ -120,10 +120,7 @@ finally:
     ARGUMENTS["tests"] = tests_arg
 
 # Now add AS-specific defines to the returned environment
-# Keep the project include root out of the compiler search path.  On
-# case-insensitive filesystems (notably macOS), the release metadata file
-# `VERSION` would otherwise shadow libc++'s standard `<version>` header.
-env.Append(CPPPATH=["src"])
+env.Append(CPPPATH=[".", "src"])
 env.Append(CPPDEFINES=["ABILITY_SYSTEM_GDEXTENSION"])
 
 # --- Object Directory and Define Selection ---

@@ -46,11 +46,11 @@ def main() -> int:
         versions.add(package)
     if branches["development"] == branches["maintenance"]:
         raise SystemExit("development and maintenance branches must differ")
-    version_file = ROOT / "VERSION"
+    version_file = ROOT / "PROJECT_VERSION"
     if not version_file.is_file() or not SEMVER.fullmatch(
         version_file.read_text().strip()
     ):
-        raise SystemExit("VERSION must contain a stable semantic version")
+        raise SystemExit("PROJECT_VERSION must contain a stable semantic version")
     print(f"release configuration OK ({', '.join(sorted(versions))})")
     return 0
 
