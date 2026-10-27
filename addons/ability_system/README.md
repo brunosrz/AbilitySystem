@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="doc/images/logo.svg" width="600" alt="Ability System Logo">
+  <img src="icons/AbilitySystem.svg" width="600" alt="Ability System Logo">
 </p>
 <br/>
 
