@@ -54,7 +54,7 @@ jobs:
             libvulkan-dev mesa-vulkan-drivers
 
       - name: Setup Java
-        uses: actions/setup-java@v4.7.0
+        uses: actions/setup-java@v6.1.0
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
