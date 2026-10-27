@@ -23,7 +23,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout Ability System
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Checkout ZyrisEngine (no-ability-system)
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           repository: ${{ env.ZYRIS_REPO }}
           ref: ${{ env.ZYRIS_BRANCH }}

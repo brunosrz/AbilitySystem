@@ -19,7 +19,7 @@ jobs:
       server-ready: ${{ steps.server.outputs.ready }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Import dependency versions
         shell: bash
@@ -105,7 +105,7 @@ jobs:
         player_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Import dependency versions
         shell: bash
@@ -196,7 +196,7 @@ jobs:
     if: always() && needs.run-clients.result != 'skipped'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Download All Client Logs
         uses: actions/download-artifact@v8
