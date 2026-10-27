@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
       - name: Code style checks
         uses: pre-commit/action@v3.0.1
         with:
@@ -46,7 +46,7 @@ jobs:
       plugin-version: ${{ steps.init.outputs.plugin-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
       - name: Init version vars
@@ -117,7 +117,7 @@ jobs:
     needs: [init-version, module-builds, package-plugin, build-demo]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Import dependency versions
         shell: bash

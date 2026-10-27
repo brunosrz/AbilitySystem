@@ -15,7 +15,7 @@ jobs:
       zyris_version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout Ability System
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           path: plugin
           submodules: true
@@ -26,7 +26,7 @@ jobs:
           grep -v '^#' plugin/deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Checkout ZyrisEngine (no-ability-system)
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
         with:
           repository: ${{ env.ZYRIS_REPO }}
           ref: ${{ env.ZYRIS_BRANCH }}
