@@ -235,7 +235,7 @@ jobs:
           add_options: "-f"
 
       - name: Upload Final Plugin Artifact
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PROJECT_ID }}+v${{ inputs.plugin_version }}.gdextension.zip
           path: out/addons/
@@ -249,7 +249,7 @@ jobs:
           cp -r out/addons/${{ env.MODULE_NAME }} tmp-demo/demo/addons/
 
       - name: Upload Final Demo Artifact
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PROJECT_ID }}+v${{ inputs.plugin_version }}.demo.zip
           path: tmp-demo/demo/

@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload Server Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mp-server-log
           path: logs/server.log
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload Client Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mp-client-log-${{ matrix.player_id }}
           path: logs/client_${{ matrix.player_id }}.log

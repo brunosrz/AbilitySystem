@@ -217,7 +217,7 @@ jobs:
           echo "✅ Total files: $(ls artifacts/ | wc -l)"
 
       - name: 📤 Upload Demo Executables
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: demo-executables-${{ inputs.plugin_version }}
           path: artifacts/
@@ -261,7 +261,7 @@ jobs:
           EOF
 
       - name: 📤 Upload Manifest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: demo-manifest-${{ inputs.plugin_version }}
           path: DEMO_MANIFEST.md
