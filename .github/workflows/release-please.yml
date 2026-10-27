@@ -1,0 +1,41 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+concurrency:
+  group: release-please-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  maintenance:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Release maintenance line
+        uses: googleapis/release-please-action@v4.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: master
+          config-file: release-please-config.maintenance.json
+          manifest-file: .release-please-manifest.maintenance.json
+
+  development:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Release development line
+        uses: googleapis/release-please-action@v4.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: develop
+          config-file: release-please-config.development.json
+          manifest-file: .release-please-manifest.development.json

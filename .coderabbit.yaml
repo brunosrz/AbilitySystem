@@ -1,28 +1,55 @@
-language: "en-US"
+language: en-US
 
 reviews:
-  profile: "assertive"
+  profile: assertive
+  request_changes_workflow: true
   high_level_summary: true
   poem: false
-  request_changes_workflow: true
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - ".*"
+    auto_pause_after_reviewed_commits: 0
   path_instructions:
-    - path: "**/*"
+    - path: "**"
       instructions: |
-        Treat compatibility, runtime behavior, and packaging as independently verifiable claims.
-        Require tests for every behavior change: happy-path, negative/error, and regression cases.
-        Do not treat skipped live tests, a successful build, or a stated result as proof of runtime behavior.
-        Check Godot 4.7 compatibility, GDExtension loading, plugin metadata, and Asset Library packaging.
-        Check native code for ownership, thread safety, deterministic state, and error propagation.
-        Check that CI gates are reproducible and that unsupported platforms are explicitly reported as skipped.
-        Report missing evidence with file paths and concrete acceptance criteria; do not approve unfinished work.
+        Tests are part of the change contract. Require happy-path, negative/error,
+        and regression coverage for every behavior change. For stateful,
+        concurrent, persistent, or multiplayer changes also require retry,
+        cancellation, conflict, recovery, and idempotency cases when applicable.
+        Do not treat a build, a skipped test, or a reported result as proof of
+        runtime behavior. Check assertions over state and observable effects.
+
+        Check Godot 4.7 and GDExtension compatibility, native ownership and lifetime,
+        deterministic rollback, thread safety, error propagation, plugin metadata,
+        Asset Library packaging, and supported-platform declarations.
+
+        For CI changes, verify that the intended gate actually fails when proof is
+        missing, that exit codes propagate, caches and artifacts are scoped, and
+        permissions are least-privilege. Report concrete file paths, failure
+        scenarios, and the test/evidence required to close each finding.
     - path: "src/**/*.{cpp,h,hpp,cc,hh}"
       instructions: |
-        Require unit, negative, and regression coverage for changed native behavior. Check memory ownership,
-        Godot API compatibility, initialization/shutdown, and multiplayer rollback determinism.
+        Require native unit, negative, and regression tests for changed behavior.
+        Inspect memory ownership, Godot API compatibility, initialization and
+        shutdown, rollback determinism, and concurrency.
     - path: "demo/**/*.{gd,tscn,tres}"
       instructions: |
-        Require a headless smoke test or an explicit documented reason why the scenario cannot run in CI.
-    - path: ".github/workflows/**/*.{yml,yaml}"
+        Require a headless smoke test or an explicit documented reason why the
+        scenario cannot run in CI.
+    - path: ".github/workflows/**"
       instructions: |
-        Check pinning, least-privilege permissions, cache correctness, artifact provenance, and that failures
-        cannot be hidden with unconditional success or ignored command errors.
+        Verify workflow triggers, permissions, pinned actions, shell quoting,
+        cleanup, artifact provenance, cache correctness, and failure propagation.
+        Any changed gate needs a negative proof that the gate rejects invalid input.
+
+chat:
+  auto_reply: true
+  art: false
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
