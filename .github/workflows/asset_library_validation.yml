@@ -1,0 +1,54 @@
+name: Asset Library readiness
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate plugin metadata and package contract
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Validate plugin metadata
+        run: python3 utility/validate_asset_library.py
+
+      - name: Validate clean addon archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf package
+          mkdir -p package/addons
+          cp -a addons/ability_system package/addons/
+          test -f package/addons/ability_system/plugin.cfg
+          test -f package/addons/ability_system/LICENSE
+          test -f package/addons/ability_system/README.md
+          find package -type f -print0 | sort -z | xargs -0 sha256sum > package/SHA256SUMS
+          test "$(find package/addons/ability_system -type f | wc -l)" -gt 3
+
+      - name: Exercise a negative metadata case
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf negative-fixture
+          mkdir -p negative-fixture/addons
+          cp -a package/addons/ability_system negative-fixture/addons/
+          rm negative-fixture/addons/ability_system/LICENSE
+          if python3 utility/validate_asset_library.py --root negative-fixture; then
+            echo "validator accepted an addon without its bundled license"
+            exit 1
+          fi
+
+      - name: Upload package manifest
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: ability-system-asset-library-manifest
+          path: package/SHA256SUMS

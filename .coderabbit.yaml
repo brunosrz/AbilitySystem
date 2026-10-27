@@ -1,0 +1,28 @@
+language: "en-US"
+
+reviews:
+  profile: "assertive"
+  high_level_summary: true
+  poem: false
+  request_changes_workflow: true
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        Treat compatibility, runtime behavior, and packaging as independently verifiable claims.
+        Require tests for every behavior change: happy-path, negative/error, and regression cases.
+        Do not treat skipped live tests, a successful build, or a stated result as proof of runtime behavior.
+        Check Godot 4.7 compatibility, GDExtension loading, plugin metadata, and Asset Library packaging.
+        Check native code for ownership, thread safety, deterministic state, and error propagation.
+        Check that CI gates are reproducible and that unsupported platforms are explicitly reported as skipped.
+        Report missing evidence with file paths and concrete acceptance criteria; do not approve unfinished work.
+    - path: "src/**/*.{cpp,h,hpp,cc,hh}"
+      instructions: |
+        Require unit, negative, and regression coverage for changed native behavior. Check memory ownership,
+        Godot API compatibility, initialization/shutdown, and multiplayer rollback determinism.
+    - path: "demo/**/*.{gd,tscn,tres}"
+      instructions: |
+        Require a headless smoke test or an explicit documented reason why the scenario cannot run in CI.
+    - path: ".github/workflows/**/*.{yml,yaml}"
+      instructions: |
+        Check pinning, least-privilege permissions, cache correctness, artifact provenance, and that failures
+        cannot be hidden with unconditional success or ignored command errors.
