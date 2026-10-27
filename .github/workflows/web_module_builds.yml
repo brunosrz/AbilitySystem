@@ -61,7 +61,7 @@ jobs:
         run: mv src zyris/modules/${{ env.MODULE_NAME }}
 
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: mymindstorm/setup-emsdk@v16
         with:
           version: ${{ env.EM_VERSION }}
 
