@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import re
+import runpy
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
+SEMVER = re.compile(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)")
 
 
 def load_json(path: Path) -> dict[str, object]:
@@ -40,6 +41,13 @@ def main() -> int:
         manifest = ROOT / manifest_name
         if not config.is_file() or not manifest.is_file():
             raise SystemExit(f"release files missing for {line_name}")
+        packages = load_json(config).get("packages", {})
+        package_config = packages.get(".", {}) if isinstance(packages, dict) else {}
+        if (
+            not isinstance(package_config, dict)
+            or package_config.get("version-file") != "PROJECT_VERSION"
+        ):
+            raise SystemExit(f"{line_name} version-file must be PROJECT_VERSION")
         package = load_json(manifest).get(".")
         if not isinstance(package, str) or not SEMVER.fullmatch(package):
             raise SystemExit(f"invalid manifest version for {line_name}: {package}")
@@ -51,6 +59,10 @@ def main() -> int:
         version_file.read_text().strip()
     ):
         raise SystemExit("PROJECT_VERSION must contain a stable semantic version")
+    module = runpy.run_path(str(ROOT / "src" / "version.py"))
+    module_version = tuple(module[key] for key in ("major", "minor", "patch"))
+    if module_version != tuple(map(int, version_file.read_text().strip().split("."))):
+        raise SystemExit("src/version.py must match PROJECT_VERSION")
     print(f"release configuration OK ({', '.join(sorted(versions))})")
     return 0
 

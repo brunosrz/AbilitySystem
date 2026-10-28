@@ -1,36 +1,36 @@
-# Publicação na Godot Asset Library
+# Publishing to the Godot Asset Library
 
-## Estado
+## Status
 
-O AbilitySystem está preparado para uma primeira publicação pública como plugin
-GDExtension para **Godot 4.7+**. A versão `0.1.0` deve ser apresentada como lançamento
-inicial, não como garantia de estabilidade para todos os jogos e plataformas.
+AbilitySystem is prepared for an initial public release as a GDExtension plugin
+for **Godot 4.7+**. Version `0.1.0` should be presented as an initial release,
+without guaranteeing stability for every game and platform.
 
-## Pacote submetido
+## Submitted package
 
-O pacote deve conter `addons/ability_system/` e, dentro dele:
+The package must contain `addons/ability_system/` with the following files:
 
-- `plugin.cfg` com nome, descrição, autor, versão, compatibilidade e ícone;
+- `plugin.cfg` with the name, description, author, version, compatibility, and icon;
 - `ability_system.gdextension`;
-- `README.md` em inglês e documentação complementar em português;
-- `LICENSE` com o texto MIT e o titular do copyright;
-- ícones e as bibliotecas nativas disponíveis para a plataforma do release.
+- `README.md` in English and supplementary documentation in Portuguese;
+- `LICENSE` with the MIT license text and copyright holder;
+- icons and the native libraries available for the release platform.
 
-O workflow de publicação usa um download customizado de um GitHub Release quando o
-pacote precisa carregar bibliotecas pré-compiladas. Isso evita depender de submódulos,
-que não são incluídos nos ZIPs automáticos do GitHub.
+The publishing workflow uses a custom download from a GitHub Release when the
+package needs to load precompiled libraries. This avoids depending on submodules,
+which are not included in GitHub's automatically generated ZIP archives.
 
-## Formulário
+## Submission form
 
-Ao submeter, usar:
+Use the following values when submitting:
 
-- repositório: `https://github.com/brunosrz/AbilitySystem`;
+- repository: `https://github.com/brunosrz/AbilitySystem`;
 - issues: `https://github.com/brunosrz/AbilitySystem/issues`;
-- licença: `MIT`;
-- versão mínima: `4.7`;
-- versão do asset: a tag publicada, por exemplo `0.1.0`;
-- download: URL direta do ZIP do release correspondente;
-- ícone: URL direta `raw.githubusercontent.com` para um PNG/JPG ou outro formato aceito.
+- license: `MIT`;
+- minimum version: `4.7`;
+- asset version: the published tag, for example `0.1.0`;
+- download: the direct URL of the corresponding release ZIP;
+- icon: a direct `raw.githubusercontent.com` URL for a PNG/JPG or another accepted format.
 
-Não submeter o asset antes de anexar evidências do build, do smoke test headless e da
-validação de metadados no mesmo commit da tag.
+Before submitting the asset, attach build, headless smoke test, and metadata
+validation evidence from the same commit as the tag.

@@ -1,87 +1,93 @@
 # Demo - Ability System v0.1 + Multiplayer RBAC
 
-Demonstração completa do **Ability System** com suporte a **Multiplayer, RBAC (Role-Based Access Control), e Admin Tools** para Godot 4.7+.
+A complete **Ability System** demo with **Multiplayer, RBAC (Role-Based Access Control), and Admin Tools** support for Godot 4.7.2+.
 
 ## 🚀 Quick Start
 
-### Para Jogar (Novo!)
-- Abra o projeto
-- Pressione **F5** para executar
-- Digite seu nome de jogador
-- Escolha entre **Singleplayer** ou **Multiplayer**
-- Jogue!
+### Play (New!)
 
-### Para Testar Sistemas Específicos
-- **`demo.tscn`** - Cena principal da demo original
-- **`player/player.tscn`** - Cena isolada do player
-- **`ui/hud.tscn`** - Interface de usuário
-- **`tests/test_rbac_scene.tscn`** - Testes de RBAC
+- Open the project
+- Press **F5** to run
+- Enter your player name
+- Choose **Singleplayer** or **Multiplayer**
+- Play!
 
-Pressione **Play (F5)** para executar.
+### Test Specific Systems
 
-### Controles
+- **`demo.tscn`** - Original demo's main scene
+- **`player/player.tscn`** - Standalone player scene
+- **`ui/hud.tscn`** - User interface
+- **`tests/test_rbac_scene.tscn`** - RBAC tests
 
-| Tecla | Ação |
+Press **Play (F5)** to run.
+
+### Controls
+
+| Key | Action |
 |-------|------|
-| **WASD** | Movimentação (Idle/Walk/Run) |
-| **Space** | Pulo (Jump/Fall) |
-| **Mouse Click** | Ataque/Combo |
+| **WASD** | Movement (Idle/Walk/Run) |
+| **Space** | Jump (Jump/Fall) |
+| **Mouse Click** | Attack/Combo |
 | **Shift + Click** | Dash Attack |
 | **T** | Chat (Multiplayer) |
-| **ESC** | Menu de Pausa (Parar jogo) |
+| **ESC** | Pause Menu (Stop game) |
 
-## 📚 Documentação
+## 📚 Documentation
 
-### Novo! Sistema Multiplayer & RBAC
-- **[QUICK_START_GUIDE.md](QUICK_START_GUIDE.md)** - Guia de início rápido para jogar
-- **[RBAC_SYSTEM_GUIDE.md](RBAC_SYSTEM_GUIDE.md)** - Documentação técnica completa do sistema RBAC
-- **[IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)** - Status de implementação e checklist de testes
-- **[FINAL_SUMMARY.md](FINAL_SUMMARY.md)** - Resumo final da implementação
+### New! Multiplayer & RBAC System
 
-### Ability System Original
-- **[ABILITY_SYSTEM_DEMO.md](ABILITY_SYSTEM_DEMO.md)** - Guia completo da arquitetura e implementação
-- **[Framework Documentation](../src/doc_classes/)** - Documentação técnica da API
-- **[Business Rules (Português)](../BUSINESS_RULES.pt.md)** - Regras de design do framework
-- **[Implementation Plan](../IMPLEMENTATION_PLAN.md)** - Plano de implementação e roadmap
+- **[QUICK_START_GUIDE.md](QUICK_START_GUIDE.md)** - Quick start guide for playing
+- **[RBAC_SYSTEM_GUIDE.md](RBAC_SYSTEM_GUIDE.md)** - Complete technical documentation for the RBAC system
+- **[IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)** - Implementation status and test checklist
+- **[FINAL_SUMMARY.md](FINAL_SUMMARY.md)** - Final implementation summary
 
-## ✨ Recursos Novos - Multiplayer & RBAC
+### Original Ability System
+
+- **[ABILITY_SYSTEM_DEMO.md](ABILITY_SYSTEM_DEMO.md)** - Complete architecture and implementation guide
+- **[Framework Documentation](../src/doc_classes/)** - Technical API documentation
+- **[Business Rules (Portuguese)](../BUSINESS_RULES.pt.md)** - Framework design rules
+- **[Implementation Plan](../IMPLEMENTATION_PLAN.md)** - Implementation plan and roadmap
+
+## ✨ New Features - Multiplayer & RBAC
 
 ### Multiplayer
-- ✅ Modo Singleplayer (local)
-- ✅ Modo Multiplayer Server (host)
-- ✅ Modo Multiplayer Client (join)
-- ✅ Abrir mundo para LAN (Open to LAN)
-- ✅ Gerenciamento de jogadores
-- ✅ Sistema de chat multiplayer
 
-### Admin & Controle de Acesso
-- ✅ Sistema RBAC (Admin, Moderator, User)
-- ✅ 8 Comandos de Admin (kick, ban, mute, broadcast, etc)
-- ✅ Painel de Admin em-game
-- ✅ Sistema de bans com expiração automática
-- ✅ Terminal CLI para servidor dedicado
-- ✅ Sistema de logging centralizado
+- ✅ Singleplayer mode (local)
+- ✅ Multiplayer Server mode (host)
+- ✅ Multiplayer Client mode (join)
+- ✅ Open world to LAN (Open to LAN)
+- ✅ Player management
+- ✅ Multiplayer chat system
 
-## 📂 Estrutura
+### Admin & Access Control
+
+- ✅ RBAC system (Admin, Moderator, User)
+- ✅ 8 Admin Commands (kick, ban, mute, broadcast, etc.)
+- ✅ In-game Admin Panel
+- ✅ Ban system with automatic expiration
+- ✅ CLI terminal for dedicated servers
+- ✅ Centralized logging system
+
+## 📂 Structure
 
 ```
 demo/
-├── ui/                          ← Interface (NOVO & EXISTENTE)
-│   ├── user_registration.tscn/.gd    ← NOVO: Registro de nome
-│   ├── main_menu.tscn/.gd            ← NOVO: Menu principal
-│   ├── admin_panel.tscn/.gd          ← NOVO: Painel de admin
-│   ├── pause_menu.gd                 ← NOVO: Menu de pausa
-│   ├── chat_system.tscn/.gd          ← NOVO: Sistema de chat
+├── ui/                          ← Interface (NEW & EXISTING)
+│   ├── user_registration.tscn/.gd    ← NEW: Name registration
+│   ├── main_menu.tscn/.gd            ← NEW: Main menu
+│   ├── admin_panel.tscn/.gd          ← NEW: Admin panel
+│   ├── pause_menu.gd                 ← NEW: Pause menu
+│   ├── chat_system.tscn/.gd          ← NEW: Chat system
 │   ├── hud.tscn/.gd                  ← Existing
 │   └── ...
 ├── autoload/                    ← Global managers
-│   ├── RBAC.gd                       ← NOVO: Controle de acesso
-│   ├── AdminCommand.gd               ← NOVO: Processador de comandos
-│   ├── AdminTerminal.gd              ← NOVO: CLI para servidor
-│   ├── ServerLogger.gd               ← NOVO: Sistema de logging
-│   ├── SystemVerification.gd         ← NOVO: Verificação do sistema
-│   ├── MultiplayerGameManager.gd     ← NOVO: Gerenciador multiplayer
-│   ├── GameData.gd                   ← NOVO: Estado global
+│   ├── RBAC.gd                       ← NEW: Access control
+│   ├── AdminCommand.gd               ← NEW: Command processor
+│   ├── AdminTerminal.gd              ← NEW: Server CLI
+│   ├── ServerLogger.gd               ← NEW: Logging system
+│   ├── SystemVerification.gd         ← NEW: System verification
+│   ├── MultiplayerGameManager.gd     ← NEW: Multiplayer manager
+│   ├── GameData.gd                   ← NEW: Global state
 │   └── GameMachine.gd                ← Existing
 ├── player/                      ← Player logic & assets
 │   ├── player.tscn/.gd
@@ -89,9 +95,9 @@ demo/
 ├── scenes/                      ← Level scenes
 │   ├── level.tscn/.gd
 │   └── demo.tscn
-├── server/                      ← NOVO: Servidor dedicado
+├── server/                      ← NEW: Dedicated server
 │   └── server.tscn/.gd
-├── tests/                       ← NOVO: Suite de testes
+├── tests/                       ← NEW: Test suite
 │   ├── test_rbac_system.gd
 │   └── test_rbac_scene.tscn
 ├── resources/                   ← Ability System data
@@ -100,57 +106,58 @@ demo/
 │   ├── effects/
 │   ├── cues/
 │   └── container/
-└── project.godot                ← ATUALIZADO: Novos autoloads
+└── project.godot                ← UPDATED: New autoloads
 ```
 
 ## 🎮 Gameplay
 
-Esta demo demonstra:
+This demo demonstrates:
 
-- ✅ Movimentação dinâmica (Idle → Walk → Run → Jump → Fall)
-- ✅ Sistema de ataque com combos (3x Light → Heavy)
-- ✅ Recursos (Stamina) com regeneração
-- ✅ Tags dinâmicas para rastreamento de estado
-- ✅ UI reativa sincronizada com estado do player
-- ✅ Animações sincronizadas com estado
+- ✅ Dynamic movement (Idle → Walk → Run → Jump → Fall)
+- ✅ Combo attack system (3x Light → Heavy)
+- ✅ Resources (Stamina) with regeneration
+- ✅ Dynamic tags for state tracking
+- ✅ Reactive UI synchronized with player state
+- ✅ Animations synchronized with state
 
-## 🔧 Técnicas Utilizadas
+## 🔧 Techniques Used
 
-- **ASComponent**: Hub central de lógica do actor
-- **Abilities**: Habilidades ativadas por input/eventos
-- **Attributes**: Sistema de valores (health, stamina, etc)
-- **Tags**: Rastreamento de estado (NAME, CONDITIONAL, EVENT)
-- **Signals**: Atualização reativa de UI via `tag_changed`
-- **Signal Callbacks**: HUD conectado a sinais, sem polling
+- **ASComponent**: Central hub for actor logic
+- **Abilities**: Abilities activated by input/events
+- **Attributes**: Value system (health, stamina, etc.)
+- **Tags**: State tracking (NAME, CONDITIONAL, EVENT)
+- **Signals**: Reactive UI updates via `tag_changed`
+- **Signal Callbacks**: HUD connected to signals, without polling
 
 ## 🐛 Debugging
 
-Logs habilitados para verificação:
+Logs enabled for verification:
 
 ```gdscript
-# Em demo/player/player.gd
+# In demo/player/player.gd
 [State] Activating motion.idle
 [State] Activating motion.walk
 [Tag Color] Player color changed to: blue
 
-# Em demo/ui/hud.gd
+# In demo/ui/hud.gd
 [HUD] tag_changed: ability.combo1 added
 [HUD] State updated: idle → walk
 [HUD] Weapon updated: unarmed
 ```
 
-Verifique a **Output Console** do Godot durante execução.
+Check Godot's **Output Console** while running.
 
 ## ⚡ Performance
 
-- **Zero Polling**: UI atualiza apenas quando estado realmente muda
-- **Signal-Based**: Uso de Godot signals para reatividade
-- **Efficient Queries**: Busca de atributos em O(1) com HashMap
+- **Zero Polling**: UI updates only when state actually changes
+- **Signal-Based**: Uses Godot signals for reactivity
+- **Efficient Queries**: O(1) attribute lookup with HashMap
 
-## 🎮 Compilar Executáveis
+## 🎮 Build Executables
 
-### Automático (GitHub Actions)
-Os executáveis são compilados automaticamente ao fazer push para `master`, `tests` ou `dev`:
+### Automatic (GitHub Actions)
+
+Executables are built automatically when pushing to `master`, `tests`, or `dev`:
 
 ```
 Windows:    demo_windows_client.exe, demo_windows_server.exe
@@ -159,55 +166,63 @@ macOS:      demo_macos_client, demo_macos_server
 Android:    demo_android_client.apk, demo_android_server.apk
 ```
 
-Veja `.github/workflows/build_demo_executables.yml`
+See `.github/workflows/build_demo_executables.yml`.
 
 ### Manual (Godot 4.7.2+)
+
 ```bash
-# Baixar Godot 4.7.2 e templates
+# Download Godot 4.7.2 and export templates
 godot --path . --export-release "Windows Desktop" ../demo_windows_client.exe
 godot --path . --export-release "Linux/X11" ../demo_linux_client
 ```
 
-## 🧪 Testar Sistema RBAC
+## 🧪 Test the RBAC System
 
-Abra a cena de teste:
+Open the test scene:
+
 ```
 demo/tests/test_rbac_scene.tscn
 ```
 
-Pressione F5 para executar testes automatizados. Verifique o console de saída do Godot.
+Press F5 to run automated tests. Check Godot's output console.
 
-## 📖 Próximas Etapas
+## 📖 Next Steps
 
-Para expandir a demo:
+To expand the demo:
 
-### Sistema Multiplayer
-1. **Adicionar Whitelist**: Permitir apenas jogadores específicos
-2. **Persistência de Bans**: Salvar lista de bans
-3. **Audit Log**: Registrar todas as ações de admin
-4. **Rate Limiting**: Prevenir spam de comandos
+### Multiplayer System
 
-### Ability System Original
-1. **Adicionar Habilidades**: Crie `.tres` em `resources/abilities/`
-2. **Adicionar Efeitos**: Crie `.tres` em `resources/effects/`
-3. **Adicionar Inimigos**: Use ASComponent para IA
-4. **Melhorar UI**: Expanda `hud.gd` com novos painéis
-5. **Adicionar Persistência**: Use ASStateSnapshot para save/load
+1. **Add Whitelist**: Allow only specific players
+2. **Ban Persistence**: Save the ban list
+3. **Audit Log**: Record all admin actions
+4. **Rate Limiting**: Prevent command spam
 
-## 📞 Suporte
+### Original Ability System
+
+1. **Add Abilities**: Create `.tres` files in `resources/abilities/`
+2. **Add Effects**: Create `.tres` files in `resources/effects/`
+3. **Add Enemies**: Use ASComponent for AI
+4. **Improve UI**: Expand `hud.gd` with new panels
+5. **Add Persistence**: Use ASStateSnapshot for save/load
+
+## 📞 Support
 
 ### Multiplayer & RBAC
-Consulte a documentação nova:
-- [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) - Como jogar
-- [RBAC_SYSTEM_GUIDE.md](RBAC_SYSTEM_GUIDE.md) - Documentação técnica
-- [IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md) - Checklist de features
 
-### Ability System Original
-Consulte:
-- [ABILITY_SYSTEM_DEMO.md](ABILITY_SYSTEM_DEMO.md) - Arquitetura completa
-- [../IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md) - Roadmap do projeto
-- [../BUSINESS_RULES.pt.md](../BUSINESS_RULES.pt.md) - Regras de design
+See the new documentation:
+
+- [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) - How to play
+- [RBAC_SYSTEM_GUIDE.md](RBAC_SYSTEM_GUIDE.md) - Technical documentation
+- [IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md) - Feature checklist
+
+### Original Ability System
+
+See:
+
+- [ABILITY_SYSTEM_DEMO.md](ABILITY_SYSTEM_DEMO.md) - Complete architecture
+- [../IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md) - Project roadmap
+- [../BUSINESS_RULES.pt.md](../BUSINESS_RULES.pt.md) - Design rules
 
 ---
 
-**Versão**: 0.1 com Multiplayer RBAC | **Godot**: 4.7+ | **Linguagem**: GDScript
+**Version**: 0.1 with Multiplayer RBAC | **Godot**: 4.7.2+ | **Language**: GDScript

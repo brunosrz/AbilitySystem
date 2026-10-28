@@ -9,7 +9,14 @@ import sys
 from pathlib import Path
 
 
-SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
+NUMERIC = r"(?:0|[1-9][0-9]*)"
+PRERELEASE = rf"(?:{NUMERIC}|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
+SEMVER = re.compile(
+    rf"{NUMERIC}\.{NUMERIC}\.{NUMERIC}"
+    rf"(?:-{PRERELEASE}(?:\.{PRERELEASE})*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+)
+SUPPORTED_PLATFORMS = {"windows", "linux", "macos", "android", "ios", "web"}
 REQUIRED_PLUGIN_FIELDS = ("name", "description", "author", "version", "godot", "icon")
 
 
@@ -49,16 +56,41 @@ def main() -> int:
         fail(f"plugin.cfg is missing fields: {', '.join(missing)}")
     if not SEMVER.fullmatch(value(plugin, "version")):
         fail(f"invalid plugin version: {value(plugin, 'version')}")
-    if not re.fullmatch(r"4\.\d+", value(plugin, "godot")):
+    if not re.fullmatch(r"4\.(?:[7-9]|[1-9][0-9]+)", value(plugin, "godot")):
         fail(f"invalid Godot compatibility: {value(plugin, 'godot')}")
 
     icon = value(plugin, "icon")
-    if not icon.startswith("icons/") or not (addon / icon).is_file():
+    icon_path = (addon / icon).resolve()
+    if (
+        not icon.startswith("icons/")
+        or not icon_path.is_relative_to((addon / "icons").resolve())
+        or not icon_path.is_file()
+    ):
         fail(f"plugin icon does not resolve inside the addon: {icon}")
 
     for required in ("README.md", "LICENSE", "ability_system.gdextension"):
         if not (addon / required).is_file():
             fail(f"required addon file is missing: {required}")
+
+    extension = configparser.ConfigParser(interpolation=None)
+    try:
+        extension.read(addon / "ability_system.gdextension", encoding="utf-8")
+    except configparser.Error as error:
+        fail(f"invalid ability_system.gdextension: {error}")
+    if not extension.has_section("libraries"):
+        fail("ability_system.gdextension has no [libraries] section")
+    prefix = "res://addons/ability_system/"
+    for platform, resource in extension["libraries"].items():
+        resource = resource.strip().strip('"')
+        if platform.split(".")[0] not in SUPPORTED_PLATFORMS or not resource.startswith(
+            prefix
+        ):
+            continue
+        library = (addon / resource.removeprefix(prefix)).resolve()
+        if library.is_relative_to(addon.resolve()) and library.is_file():
+            break
+    else:
+        fail("no declared library for a supported platform exists inside the addon")
 
     forbidden = [
         path

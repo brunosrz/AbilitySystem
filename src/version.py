@@ -3,8 +3,9 @@
 from pathlib import Path
 
 
-def _read_version() -> tuple[int, int, int]:
-    version_path = Path(__file__).resolve().parents[1] / "PROJECT_VERSION"
+def _read_version(version_path: Path | None = None) -> tuple[int, int, int]:
+    if version_path is None:
+        version_path = Path(__file__).resolve().parents[1] / "PROJECT_VERSION"
     try:
         major_text, minor_text, patch_text = (
             version_path.read_text(encoding="utf-8").strip().split(".")

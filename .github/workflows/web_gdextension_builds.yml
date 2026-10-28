@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: godotengine/godot-cpp
           ref: ${{ inputs.godot-cpp-version }}
@@ -42,7 +42,7 @@ jobs:
 
 
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
         with:
           version: ${{ env.EM_VERSION }}
 
@@ -81,7 +81,7 @@ jobs:
           find addons/${{ env.MODULE_NAME }}/bin/ -maxdepth 1 -name "*.wasm" -exec cp {} tmp-builds/out/addons/${{ env.MODULE_NAME }}/bin/ \;
 
       - name: Cache Build for Packaging
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: tmp-builds/out/
           key: tmp-bin-${{ github.run_id }}-web-wasm32-${{ matrix.float-precision }}-${{ matrix.target }}
