@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Ability System
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           submodules: recursive
 
@@ -35,7 +35,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Checkout ZyrisEngine (no-ability-system)
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: ${{ env.ZYRIS_REPO }}
           ref: ${{ env.ZYRIS_BRANCH }}
@@ -61,6 +61,7 @@ jobs:
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache
           cache-name: windows_${{ inputs.arch }}_${{ inputs.target }}_${{ inputs.module }}_engine-${{ env.ZYRIS_VER }}
+          enable-cross-os-archive: true
 
       - name: Build Zyris (Windows Target)
         working-directory: zyris
@@ -84,6 +85,7 @@ jobs:
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache
           cache-name: windows_${{ inputs.arch }}_${{ inputs.target }}_${{ inputs.module }}_engine-${{ env.ZYRIS_VER }}
+          enable-cross-os-archive: true
 
       - name: Prepare Artifact
         shell: bash

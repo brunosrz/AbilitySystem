@@ -7,17 +7,21 @@ inputs:
   scons-cache:
     description: The SCons cache path.
     default: ${{ github.workspace }}/.scons_cache
+  enable-cross-os-archive:
+    description: Allow archives to be restored across operating systems.
+    default: 'false'
 
 runs:
   using: composite
   steps:
     - name: Restore default cache
-      uses: actions/cache/restore@v5
+      uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
       id: cache-ping
       with:
         path: ${{ inputs.scons-cache }}
         key: ${{ inputs.cache-name }}|${{ github.event.repository.default_branch }}|${{ github.sha }}
         restore-keys: ${{ inputs.cache-name }}|${{ github.event.repository.default_branch }}
+        enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
 
     - name: Log default cache files
       if: steps.cache-ping.outputs.cache-matched-key && github.ref_name != github.event.repository.default_branch
@@ -27,12 +31,13 @@ runs:
     # This is done after pulling the default cache so that PRs can integrate any potential changes
     # from the default branch without conflicting with whatever local changes were already made.
     - name: Restore local cache
-      uses: actions/cache/restore@v5
+      uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
       if: github.ref_name != github.event.repository.default_branch
       with:
         path: ${{ inputs.scons-cache }}
         key: ${{ inputs.cache-name }}|${{ github.ref_name }}|${{ github.sha }}
         restore-keys: ${{ inputs.cache-name }}|${{ github.ref_name }}
+        enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
 
     - name: Store unix timestamp
       shell: sh

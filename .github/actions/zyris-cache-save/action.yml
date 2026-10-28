@@ -7,6 +7,9 @@ inputs:
   scons-cache:
     description: The SCons cache path.
     default: ${{ github.workspace }}/.scons_cache
+  enable-cross-os-archive:
+    description: Allow archives to be shared across operating systems.
+    default: 'false'
 
 runs:
   using: composite
@@ -23,7 +26,8 @@ runs:
         fi
 
     - name: Save SCons cache directory
-      uses: actions/cache/save@v5
+      uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
       with:
         path: ${{ inputs.scons-cache }}
         key: ${{ inputs.cache-name }}|${{ github.ref_name }}|${{ github.sha }}
+        enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
