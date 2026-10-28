@@ -10,12 +10,12 @@ on:
 jobs:
   setup:
     name: 🔍 Setup Godot CPP
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       godot_cpp_version: ${{ steps.vars.outputs.godot_cpp_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
 
       - id: vars
         name: Export Version

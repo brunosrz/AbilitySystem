@@ -54,6 +54,18 @@ opts = Variables(customs, ARGUMENTS)
 opts.Add("tests", "Tests to run (no, unit, bridge, yes)", "no")
 opts.Update(localEnv)
 
+# godot-cpp 4.7+ no longer infers the extension API from the engine binary.
+# Keep the API level explicit so every CI invocation (including plain `scons`)
+# uses the same interface as the project.  A command-line value still wins.
+ARGUMENTS.setdefault("api_version", os.environ.get("GODOT_CPP_API_LEVEL", "4.7"))
+
+# `tests` is an AbilitySystem-only option.  Do not leak it into godot-cpp's
+# SCons invocation: current godot-cpp rejects unknown variables instead of
+# silently accepting them.  Restore it immediately after the nested build so
+# the project can still select its test sources below.
+tests_arg = ARGUMENTS.get("tests", localEnv.get("tests", "no"))
+ARGUMENTS.pop("tests", None)
+
 Help(opts.GenerateHelpText(localEnv))
 
 env = localEnv.Clone()
@@ -102,14 +114,16 @@ if os.path.exists(gcpp_sconstruct_path):
 
 # --- Godot-CCP Build (Isolated from AS defines) ---
 gcpp_env = env.Clone()
-env = SConscript("godot-cpp/SConstruct", {"env": gcpp_env, "customs": customs})
+try:
+    env = SConscript("godot-cpp/SConstruct", {"env": gcpp_env, "customs": customs})
+finally:
+    ARGUMENTS["tests"] = tests_arg
 
 # Now add AS-specific defines to the returned environment
 env.Append(CPPPATH=[".", "src"])
 env.Append(CPPDEFINES=["ABILITY_SYSTEM_GDEXTENSION"])
 
 # --- Object Directory and Define Selection ---
-tests_arg = ARGUMENTS.get("tests", env.get("tests", "no"))
 bin_prefix = "bin"
 
 if tests_arg != "no":

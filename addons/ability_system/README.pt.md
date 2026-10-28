@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="doc/images/logo.svg" width="600" alt="Ability System Logo">
+  <img src="icons/AbilitySystem.svg" width="600" alt="Ability System Logo">
 </p>
 <br/>
 
-# Ability System - Lógica Orientada a Dados para Godot 4.x
+# Ability System - Lógica Orientada a Dados para Godot 4.7+
 
-[![Godot Engine](https://img.shields.io/badge/Godot-4.6-blue?logo=godot-engine&logoColor=white)](https://godotengine.org)
+[![Godot Engine](https://img.shields.io/badge/Godot-4.7.2-blue?logo=godot-engine&logoColor=white)](https://godotengine.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > [!TIP]
@@ -18,7 +18,7 @@ O **Ability System** (AS) é um framework poderoso para criação de combate, ha
 
 ## 📦 Instalação
 
-1. Baixe o `ability-system-plugin.zip` mais recente em nossas [Releases](https://github.com/brunosrz/AbilitySystem/releases/download/v0.1.0/ability-system+v0.1.0-dev.gdextension.zip).
+1. Baixe o `ability-system-plugin.zip` mais recente em nossas [Releases](https://github.com/brunosrz/AbilitySystem/releases).
 2. Extraia e copie a pasta `addons/ability_system` para o diretório `addons/` do seu projeto.
 3. Reinicie a Godot e vá em **Projeto > Configurações do Projeto > Plugins** para ativar o plugin "Ability System". Isso ativará o Editor de Tags e as funcionalidades customizadas do Inspetor.
 
@@ -39,7 +39,7 @@ Este framework introduz conceitos avançados para desacoplar a lógica de jogo:
 Este projeto foi projetado exclusivamente para suportar **Compilação Dual**, atendendo tanto ao desenvolvimento do núcleo da engine quanto ao ecossistema de plugins:
 
 - **Zyris Engine (Nativo):** Este framework é um componente nativo do núcleo do **Zyris Engine**. O desenvolvimento neste repositório permite automação centralizada e validação rigorosa. Após estabilizado, o código é oficialmente integrado à branch `master` do Zyris Engine.
-- **GDExtension (Plugin):** Uma versão em biblioteca dinâmica para projetos Godot 4.x padrões. Oferece 100% de paridade lógica sem exigir a recompilação do motor, ideal para projetos que utilizam a distribuição oficial da Godot.
+- **GDExtension (Plugin):** Uma versão em biblioteca dinâmica para projetos Godot 4.7 ou superior. Oferece 100% de paridade lógica sem exigir a recompilação do motor, ideal para projetos que utilizam a distribuição oficial da Godot.
 
 Uma base de código C++ unificada alimenta ambas as versões, utilizando um sistema robusto de pré-processamento (`#ifdef ABILITY_SYSTEM_GDEXTENSION`) para gerenciar as diferenças de integração, mantendo uma única fonte de verdade para a lógica.
 

@@ -10,13 +10,13 @@ on:
 jobs:
   build-demo:
     name: 🎮 Build Demo (Client & Server - All Platforms)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       actions: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -54,32 +54,34 @@ jobs:
         run: |
           mkdir -p godot-bin
           cd godot-bin
-          # Download Godot 4.6.1 Linux binary (headless)
-          wget -q --timeout=30 --tries=3 https://github.com/godotengine/godot-releases/releases/download/4.6.1-stable/Godot_v4.6.1-stable_linux.x86_64.zip
+          GODOT_FILE="Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64.zip"
+          GODOT_URL="${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${GODOT_FILE}"
+          wget -q --timeout=30 --tries=3 "$GODOT_URL" -O "$GODOT_FILE"
           if [ $? -ne 0 ]; then
             echo "Primary download failed, trying mirror..."
-            wget -q --timeout=30 --tries=3 https://downloads.tuxfamily.org/godotengine/4.6.1/Godot_v4.6.1-stable_linux.x86_64.zip
+            wget -q --timeout=30 --tries=3 "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${GODOT_FILE}" -O "$GODOT_FILE"
           fi
-          unzip -q Godot_v4.6.1-stable_linux.x86_64.zip
-          chmod +x Godot_v4.6.1-stable_linux.x86_64
+          unzip -q "$GODOT_FILE"
+          chmod +x "Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64"
           cd ..
-          echo "GODOT_BIN=$(pwd)/godot-bin/Godot_v4.6.1-stable_linux.x86_64" >> "$GITHUB_ENV"
+          echo "GODOT_BIN=$(pwd)/godot-bin/Godot_v${GODOT_VERSION_FOR_EXPORT}_linux.x86_64" >> "$GITHUB_ENV"
 
       - name: Download Export Templates
         shell: bash
         run: |
-          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/4.6.1.stable"
+          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
           mkdir -p "$TEMPLATES_DIR"
 
           cd /tmp
-          wget -q --timeout=30 --tries=3 https://github.com/godotengine/godot-releases/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export-templates.tpz
+          TEMPLATES_FILE="Godot_v${GODOT_VERSION_FOR_EXPORT}_export_templates.tpz"
+          wget -q --timeout=30 --tries=3 "${GODOT_RELEASES_URL}/${GODOT_VERSION}-${GODOT_STATUS}/${TEMPLATES_FILE}"
           if [ $? -ne 0 ]; then
             echo "Primary download failed, trying mirror..."
-            wget -q --timeout=30 --tries=3 https://downloads.tuxfamily.org/godotengine/4.6.1/Godot_v4.6.1-stable_export-templates.tpz
+            wget -q --timeout=30 --tries=3 "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${TEMPLATES_FILE}"
           fi
 
-          unzip -q -o Godot_v4.6.1-stable_export-templates.tpz -d "$TEMPLATES_DIR"
-          rm -f Godot_v4.6.1-stable_export-templates.tpz
+          unzip -q -o "$TEMPLATES_FILE" -d "$TEMPLATES_DIR"
+          rm -f "$TEMPLATES_FILE"
 
           if [ -d "$TEMPLATES_DIR/templates" ]; then
             mv "$TEMPLATES_DIR/templates/"* "$TEMPLATES_DIR/" 2>/dev/null || true
@@ -217,7 +219,7 @@ jobs:
           echo "✅ Total files: $(ls artifacts/ | wc -l)"
 
       - name: 📤 Upload Demo Executables
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v5
         with:
           name: demo-executables-${{ inputs.plugin_version }}
           path: artifacts/
@@ -255,13 +257,13 @@ jobs:
           ```
 
           ## Build Info
-          - Godot Version: 4.6.1
+          - Godot Version: ${{ env.GODOT_VERSION }}
           - Built on: ${{ runner.os }}
           - Build Date: ${{ github.event.head_commit.timestamp }}
           EOF
 
       - name: 📤 Upload Manifest
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v5
         with:
           name: demo-manifest-${{ inputs.plugin_version }}
           path: DEMO_MANIFEST.md
