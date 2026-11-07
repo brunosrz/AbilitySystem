@@ -109,6 +109,7 @@ repos:
     hooks:
       - id: codespell
         additional_dependencies: [tomli]
+        args: [--ignore-words-list=fase]
         exclude: (?x)^(.*\.md*|tests/doctest\.h|.*\.svg)$
 
   - repo: https://github.com/python-jsonschema/check-jsonschema

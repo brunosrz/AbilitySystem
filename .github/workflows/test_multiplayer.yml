@@ -14,12 +14,12 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[tests skip]') &&
       !contains(github.event.head_commit.message, '[mp skip]')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       server-ready: ${{ steps.server.outputs.ready }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
 
       - name: Import dependency versions
         shell: bash
@@ -27,7 +27,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v6
+        uses: actions/cache/restore@v5
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload Server Log
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v5
         with:
           name: mp-server-log
           path: logs/server.log
@@ -98,14 +98,14 @@ jobs:
     name: 🎮 Run Client Multiplayer Tests
     needs: [run-server]
     if: needs.run-server.outputs.server-ready == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         player_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
 
       - name: Import dependency versions
         shell: bash
@@ -113,7 +113,7 @@ jobs:
           grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Restore Test Binaries from Cache
-        uses: actions/cache/restore@v6
+        uses: actions/cache/restore@v5
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload Client Log
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v5
         with:
           name: mp-client-log-${{ matrix.player_id }}
           path: logs/client_${{ matrix.player_id }}.log
@@ -192,21 +192,21 @@ jobs:
   analyze-multiplayer:
     name: 📊 Analysis & Disclosure
     needs: [run-clients]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always() && needs.run-clients.result != 'skipped'
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
 
       - name: Download All Client Logs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           pattern: mp-client-log-*
           path: all-logs
           merge-multiple: false
 
       - name: Download Server Log
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: mp-server-log
           path: all-logs

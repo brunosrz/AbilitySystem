@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="doc/images/logo.svg" width="600" alt="Ability System Logo">
+  <img src="icons/AbilitySystem.svg" width="600" alt="Ability System Logo">
 </p>
 <br/>
 
-# Ability System - Data-Driven Abilities for Godot 4.x
+# Ability System - Data-Driven Abilities for Godot 4.7+
 
-[![Godot Engine](https://img.shields.io/badge/Godot-4.6-blue?logo=godot-engine&logoColor=white)](https://godotengine.org)
+[![Godot Engine](https://img.shields.io/badge/Godot-4.7.2-blue?logo=godot-engine&logoColor=white)](https://godotengine.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > [!TIP]
@@ -18,7 +18,7 @@
 
 ## 📦 Installation
 
-1. Download the latest `ability-system-plugin.zip` from [Releases](https://github.com/brunosrz/AbilitySystem/releases/download/v0.1.0/ability-system+v0.1.0-dev.gdextension.zip).
+1. Download the latest `ability-system-plugin.zip` from [Releases](https://github.com/brunosrz/AbilitySystem/releases).
 2. Extract and copy the `addons/ability_system` folder to your project's `addons/` directory.
 3. Restart Godot and go to **Project > Project Settings > Plugins** to enable the "Ability System" plugin. This activates the Tag Editor and custom Inspector features.
 
@@ -39,7 +39,7 @@ This framework introduces advanced concepts to decouple game logic:
 This project is uniquely engineered to support **Dual Compilation**, serving both the core engine development and the plugin ecosystem:
 
 - **Zyris Engine (Native):** This framework is a core native component of the **Zyris Engine**. Development in this repository allows for centralized automation and rigorous validation. Once stabilized, the code is officially integrated into the Zyris Engine's `master` branch.
-- **GDExtension (Plugin):** A dynamic library version for standard Godot 4.x projects. It provides 100% logic parity without requiring engine recompilation, ideal for projects using the official Godot distribution.
+- **GDExtension (Plugin):** A dynamic library version for standard Godot 4.7+ projects. It provides 100% logic parity without requiring engine recompilation, ideal for projects using the official Godot distribution.
 
 A unified C++ codebase powers both versions, using a robust preprocessor system (`#ifdef ABILITY_SYSTEM_GDEXTENSION`) to manage integration differences while maintaining a single source of truth for the logic.
 

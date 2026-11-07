@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Ability System
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -23,7 +23,7 @@ jobs:
         run: grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
 
       - name: Checkout godot-cpp
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           repository: godotengine/godot-cpp
           ref: ${{ env.GODOT_CPP_API_VERSION }}
@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           echo "=== Building godot-cpp ==="
-          scons -C godot-cpp platform=linux arch=x86_64 target=editor -j$(nproc) 2>&1 | tail -50
+          scons -C godot-cpp api_version=4.7 platform=linux arch=x86_64 target=editor -j$(nproc) 2>&1 | tail -50
 
           # Verify gdvirtual.gen.inc was generated (it's in include subdirectory)
           if [ ! -f "godot-cpp/gen/include/godot_cpp/core/gdvirtual.gen.inc" ]; then

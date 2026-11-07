@@ -29,6 +29,18 @@ runs:
       id: calc
       shell: bash
       run: |
+        # Validate the release source before importing the module's fallback values.
+        python3 - <<'PY'
+        import re
+        from pathlib import Path
+
+        path = Path("PROJECT_VERSION")
+        if not path.is_file() or not re.fullmatch(
+            r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)",
+            path.read_text(encoding="utf-8").strip(),
+        ):
+            raise SystemExit("::error::PROJECT_VERSION must exist and contain a stable MAJOR.MINOR.PATCH version")
+        PY
         # Extract version from src/version.py using Python via module import to avoid __file__ errors
         VERSION=$(python3 -c "import sys, os; sys.path.insert(0, os.path.abspath('src')); import version; print(f'{version.major}.{version.minor}.{version.patch}' + (f'-{version.status}' if version.status and version.status != 'stable' else ''))")
         echo "PLUGIN_VERSION=$VERSION" >> "$GITHUB_ENV"

@@ -1,14 +1,15 @@
-# VERSION is the single release-please managed source of truth. Keeping the
+# PROJECT_VERSION is the single release-please managed source of truth. Keeping the
 # parsed values here preserves the existing C++ header generation API.
 from pathlib import Path
 
 
-def _read_version() -> tuple[int, int, int]:
-    version_path = Path(__file__).resolve().parents[1] / "VERSION"
+def _read_version(version_path: Path | None = None) -> tuple[int, int, int]:
+    if version_path is None:
+        version_path = Path(__file__).resolve().parents[1] / "PROJECT_VERSION"
     try:
-        major_text, minor_text, patch_text = version_path.read_text(
-            encoding="utf-8"
-        ).strip().split(".")
+        major_text, minor_text, patch_text = (
+            version_path.read_text(encoding="utf-8").strip().split(".")
+        )
         return int(major_text), int(minor_text), int(patch_text)
     except (OSError, ValueError):
         return 0, 1, 0

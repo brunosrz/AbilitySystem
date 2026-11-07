@@ -20,14 +20,47 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [cpp, python]
+        include:
+          - language: cpp
+            build-mode: manual
+          - language: python
+            build-mode: none
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: github/codeql-action/init@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Import dependency versions
+        if: matrix.language == 'cpp'
+        run: grep -v '^#' deps.env | grep -v '^$' >> "$GITHUB_ENV"
+      - name: Fetch godot-cpp
+        if: matrix.language == 'cpp'
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: godotengine/godot-cpp
+          ref: ${{ env.GODOT_CPP_API_VERSION }}
+          path: godot-cpp
+          submodules: recursive
+          persist-credentials: false
+      - name: Install SCons
+        if: matrix.language == 'cpp'
+        run: python3 -m pip install "scons==${SCONS_VERSION}"
+      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
+        id: init
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v4
+          build-mode: ${{ matrix.build-mode }}
+      - name: Build the extension for extraction
         if: matrix.language == 'cpp'
-      - uses: github/codeql-action/analyze@v4
+        run: scons platform=linux target=editor arch=x86_64 precision=single -j2
+      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
+        id: analyze
         with:
           category: "/language:${{ matrix.language }}"
+      - name: Require complete C++ extraction
+        if: matrix.language == 'cpp'
+        env:
+          CODEQL_DATABASE: ${{ fromJSON(steps.analyze.outputs.db-locations).cpp }}
+          CODEQL: ${{ steps.init.outputs.codeql-path }}
+        run: |
+          "$CODEQL" pack install .github/codeql
+          "$CODEQL" query run .github/codeql/extraction.ql --database="$CODEQL_DATABASE" --output=extraction.bqrs
+          "$CODEQL" bqrs decode extraction.bqrs --format=csv --output=extraction.csv
+          python3 utility/check_codeql_extraction.py extraction.csv

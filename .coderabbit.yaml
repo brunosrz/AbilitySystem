@@ -23,24 +23,28 @@ reviews:
         Do not treat a build, a skipped test, or a reported result as proof of
         runtime behavior. Check assertions over state and observable effects.
 
-        Check Godot and GDExtension compatibility, native ownership and lifetime,
+        Check Godot 4.7 and GDExtension compatibility, native ownership and lifetime,
         deterministic rollback, thread safety, error propagation, plugin metadata,
-        release packaging, and supported-platform declarations.
+        Asset Library packaging, and supported-platform declarations.
 
         For CI changes, verify that the intended gate actually fails when proof is
-        missing, that exit codes propagate, that caches and artifacts are scoped,
-        and that permissions are least-privilege. Report concrete file paths,
-        failure scenarios, and the test/evidence required to close each finding.
+        missing, that exit codes propagate, caches and artifacts are scoped, and
+        permissions are least-privilege. Report concrete file paths, failure
+        scenarios, and the test/evidence required to close each finding.
     - path: "src/**/*.{cpp,h,hpp,cc,hh}"
       instructions: |
         Require native unit, negative, and regression tests for changed behavior.
         Inspect memory ownership, Godot API compatibility, initialization and
         shutdown, rollback determinism, and concurrency.
+    - path: "demo/**/*.{gd,tscn,tres}"
+      instructions: |
+        Require a headless smoke test or an explicit documented reason why the
+        scenario cannot run in CI.
     - path: ".github/workflows/**"
       instructions: |
         Verify workflow triggers, permissions, pinned actions, shell quoting,
-        cleanup, artifact provenance, and failure propagation. Any changed gate
-        needs a negative proof that the gate rejects invalid input.
+        cleanup, artifact provenance, cache correctness, and failure propagation.
+        Any changed gate needs a negative proof that the gate rejects invalid input.
 
 chat:
   auto_reply: true

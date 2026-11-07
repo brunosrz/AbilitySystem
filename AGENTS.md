@@ -1,6 +1,6 @@
 # AGENTS.md - Instruções para Agentes de IA
 
-**Última atualização**: 2026-04-04
+**Última atualização**: 2026-10-27
 
 ---
 
@@ -137,3 +137,24 @@ Se algum falhar, o pre-commit hook output mostrará como corrigir.
 - Plano Original: `IMPLEMENTATION_PLAN_MULTIPLAYER_ROBUST_FINAL.md`
 - Resumo Implementação: `MULTIPLAYER_IMPLEMENTATION_SUMMARY.md`
 - Plano Atual: `.claude/plans/jaunty-enchanting-star.md`
+
+---
+
+## 📦 Publicação na Godot Asset Library
+
+O alvo de compatibilidade desta linha é a versão estável **Godot 4.7.2**. A versão 4.8
+é beta e não pode ser usada como evidência de compatibilidade estável.
+
+Antes de criar uma tag ou submeter o asset:
+
+1. Execute `python utility/validate_asset_library.py`.
+2. Execute a suíte nativa e o smoke test headless no mesmo commit.
+3. Gere o pacote somente com `addons/ability_system`, incluindo `README.md`, `LICENSE`,
+   `plugin.cfg`, o `.gdextension`, ícone e as bibliotecas compiladas suportadas.
+4. Registre no release quais plataformas foram compiladas e quais ficaram `skipped`.
+5. Use a URL pública de navegação do repositório e a URL direta do ícone no formulário da
+   Asset Library; não use uma URL de clone `.git`.
+
+Um build verde não substitui a prova de carregamento da GDExtension. Mudanças de runtime
+exigem testes de caso feliz, negativos e de regressão. Testes live indisponíveis devem
+permanecer explicitamente classificados como `skipped`, nunca como aprovados.

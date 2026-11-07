@@ -7,7 +7,7 @@
     ".": {
       "release-type": "simple",
       "package-name": "ability-system",
-      "version-file": "VERSION",
+      "version-file": "PROJECT_VERSION",
       "changelog-path": "CHANGELOG.md",
       "include-component-in-tag": false,
       "extra-files": [

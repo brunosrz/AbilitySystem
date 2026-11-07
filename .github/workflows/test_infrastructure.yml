@@ -11,12 +11,12 @@ jobs:
   build-infra:
     name: 🏗️ Build Infrastructure
     if: "!contains(github.event.head_commit.message, '[tests skip]')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       godot-bin-name: ${{ steps.godot.outputs.bin-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           echo "GODOT_CPP_VERSION=$GC_VER" >> "$GITHUB_ENV"
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           repository: godotengine/godot-cpp
           ref: ${{ env.GODOT_CPP_VERSION }}
@@ -231,7 +231,7 @@ jobs:
           echo "✅ Demo Client & Server exported successfully"
 
       - name: Save Test Binaries to Cache
-        uses: actions/cache/save@v6
+        uses: actions/cache/save@v5
         with:
           path: dist/
           key: ${{ github.sha }}-test-binaries

@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -38,7 +38,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
 
       - name: Fetch godot-cpp
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v5
         with:
           repository: godotengine/godot-cpp
           ref: ${{ inputs.godot-cpp-version }}
@@ -86,7 +86,7 @@ jobs:
           find addons/${{ env.MODULE_NAME }}/bin/ -maxdepth 1 -name "*.so" -exec cp {} tmp-builds/out/addons/${{ env.MODULE_NAME }}/bin/ \;
 
       - name: Cache Build for Packaging
-        uses: actions/cache/save@v6
+        uses: actions/cache/save@v5
         with:
           path: tmp-builds/out/
           key: tmp-bin-${{ github.run_id }}-linux-${{ matrix.arch }}-${{ matrix.float-precision }}-${{ matrix.target }}
